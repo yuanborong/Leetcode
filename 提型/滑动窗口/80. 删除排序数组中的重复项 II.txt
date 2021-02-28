@@ -1,0 +1,27 @@
+class Solution {
+    public int removeDuplicates(int[] nums) {
+
+        int len = nums.length ;
+        if(len <= 2) return len ;
+
+        int left = 0 , right = 0 ;
+        int curEndNum = -1 ;
+        int curEndNumCount = 0 ;
+        while(right < len){
+            if(curEndNum == nums[right] && curEndNumCount >= 2){
+                right++ ;
+                curEndNumCount++ ;
+                continue ;
+            }
+            nums[left] = nums[right] ;
+            if(nums[left] == curEndNum) curEndNumCount++ ;
+            else curEndNumCount = 1 ;
+            curEndNum = nums[left] ;
+            left++ ;
+            right++ ;
+        }
+
+        return left ;
+
+    }
+}
