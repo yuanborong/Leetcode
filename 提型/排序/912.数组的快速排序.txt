@@ -1,0 +1,33 @@
+class Solution {
+
+    public void partion(int[] nums , int start , int end){
+
+        if(start >= end ) return;
+        int left = start ;
+        int right = end;
+        int x = nums[left];
+        while(left < right){
+            while(left < right && nums[right] >= x) right--;
+            if(left == right) break;
+            nums[left] = nums[right];
+            while(left < right && nums[left] < x) left++;
+            if(left == right) break;
+            nums[right] = nums[left];
+        }
+        nums[left] = x;
+        partion(nums , start , left - 1);
+        partion(nums , left + 1 , end);
+        return;
+
+    }
+
+    public int[] sortArray(int[] nums) {
+
+        int len = nums.length;
+        if(len <= 1) return nums;
+
+        partion(nums , 0 , len - 1);
+        return nums;
+
+    }
+}

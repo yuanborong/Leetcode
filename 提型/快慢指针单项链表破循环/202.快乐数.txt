@@ -1,0 +1,31 @@
+class Solution {
+public:
+
+    int squareNunmber(int n){
+
+        int res = 0;
+        int t ;
+        while(n){
+            res += ((n % 10) * (n % 10));
+            n /= 10;
+        }
+        return res;
+
+    }
+
+    bool isHappy(int n) {
+
+        int fast_n = n;
+        int slow_n = n;
+        do{
+            fast_n = squareNunmber(squareNunmber(fast_n));
+            slow_n = squareNunmber(slow_n);
+            if(fast_n == 1){
+                return true;
+            }
+        }
+        while(fast_n != slow_n);
+        return false;
+
+    }
+};

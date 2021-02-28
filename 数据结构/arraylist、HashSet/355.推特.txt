@@ -1,0 +1,91 @@
+class Twitter {
+
+    public HashMap<Integer , LinkedHashSet<Integer>> m_follower;
+    public ArrayList<Node> list_twitter;
+    public Integer time;
+    public Integer sumOfTwitter;
+
+    /** Initialize your data structure here. */
+    public Twitter() {
+        this.m_follower = new HashMap<>();
+        this.list_twitter = new ArrayList<>();
+        this.sumOfTwitter = 0;
+    }
+    
+    /** Compose a new tweet. */
+    public void postTweet(int userId, int tweetId) {
+        if(m_follower.containsKey(userId) == false){
+            LinkedHashSet<Integer> temp_linkedset_integer = new LinkedHashSet<>();
+            m_follower.put(userId , temp_linkedset_integer);
+        }
+        Node new_twitter = new Node(userId , tweetId);
+        list_twitter.add(new_twitter);
+        this.sumOfTwitter++;
+        return;
+    }
+    
+    /** Retrieve the 10 most recent tweet ids in the user's news feed. Each item in the news feed must be posted by users who the user followed or by the user herself. Tweets must be ordered from most recent to least recent. */
+    public List<Integer> getNewsFeed(int userId) {
+        List<Integer> res = new ArrayList<>();
+        if(m_follower.containsKey(userId) == false){
+            return res;
+        }
+        LinkedHashSet<Integer> temp_follower = m_follower.get(userId);
+        int index = sumOfTwitter - 1;
+        Node cur_node ;
+        while(index >= 0 && res.size() < 10){
+            cur_node = list_twitter.get(index--);
+            if(userId == cur_node.author_id ||temp_follower.contains(cur_node.author_id) == true){
+                res.add(cur_node.twitter_id);
+            }
+        }
+        // Collections.reverse(res);
+        return res;
+    }
+    
+    /** Follower follows a followee. If the operation is invalid, it should be a no-op. */
+    public void follow(int followerId, int followeeId) {
+        if(m_follower.containsKey(followerId) == false){
+            LinkedHashSet<Integer> temp_linkedset_integer = new LinkedHashSet<>();
+            m_follower.put(followerId , temp_linkedset_integer);
+        }
+        if(m_follower.containsKey(followeeId) == false){
+            LinkedHashSet<Integer> temp_linkedset_integer = new LinkedHashSet<>();
+            m_follower.put(followeeId , temp_linkedset_integer);
+        }
+        m_follower.get(followerId).add(followeeId);
+        return;
+    }
+    
+    /** Follower unfollows a followee. If the operation is invalid, it should be a no-op. */
+    public void unfollow(int followerId, int followeeId) {
+        if(m_follower.containsKey(followerId) == false){
+            return;
+        }
+        m_follower.get(followerId).remove(followeeId);
+        return;
+    }
+}
+
+class Node{
+
+    public Integer author_id;
+    public Integer twitter_id;
+
+    public Node() {};
+
+    public Node(Integer author_id , Integer twitter_id){
+        this.author_id = author_id;
+        this.twitter_id = twitter_id;
+    }
+
+}
+
+/**
+ * Your Twitter object will be instantiated and called as such:
+ * Twitter obj = new Twitter();
+ * obj.postTweet(userId,tweetId);
+ * List<Integer> param_2 = obj.getNewsFeed(userId);
+ * obj.follow(followerId,followeeId);
+ * obj.unfollow(followerId,followeeId);
+ */

@@ -1,0 +1,77 @@
+// https://leetcode-cn.com/problems/regions-cut-by-slashes/solution/you-xie-gang-hua-fen-qu-yu-by-leetcode-67xb/
+
+class Solution {
+
+    public int[] parents ;
+
+    public int find(int x){
+        return (x == parents[x]) ? x : find(parents[x]);
+    }
+
+    public void union(int x , int y){
+        int parentX = find(x);
+        int parentY = find(y);
+        if(parentX != parentY){
+            parents[parentX] = parentY ;
+        }
+        return ;
+    }
+
+    public int regionsBySlashes(String[] grid) {
+
+        int n = grid.length;
+        if(n < 0) return 0 ;
+        int m = grid[0].length();
+        if(m < 0) return 0 ;
+
+        parents = new int[n * n * 4] ;
+        for(int i = 0 ; i < (n * n) ; i++){
+            for(int j = 0 ; j < 4 ; j++){
+                parents[i * 4 + j] = i * 4 + j;
+            }
+        }
+        char[] str ; 
+        char ch ;
+        int startIndex ;
+        for(int i = 0 ; i < n ; i++){
+            str = grid[i].toCharArray();
+            startIndex = i * n * 4 ;
+            for(int j = 0 ; j < n ; j++){
+                ch = str[j]; 
+                if(ch == ' '){
+                    union(startIndex , startIndex + 1);
+                    union(startIndex + 1, startIndex + 2);
+                    union(startIndex + 2 , startIndex + 3);
+                }
+                if(ch == '/'){
+                    union(startIndex , startIndex + 1);
+                    union(startIndex + 2 , startIndex + 3);
+                }
+                if(ch == '\\'){
+                    union(startIndex , startIndex + 3);
+                    union(startIndex + 1 , startIndex + 2);
+                }
+                if(j != (n - 1)){
+                    union(startIndex + 2 , (startIndex + 4));
+                }
+                if(i != (n - 1)){
+                    union(startIndex + 3 , startIndex + n * 4 + 1);
+                }
+                startIndex += 4 ;
+            }
+            
+            
+        }
+
+        Set<Integer> set = new HashSet<>();
+        for(int i = 0 ; i < (n * n) ; i++){
+            for(int j = 0 ; j < 4 ; j++){
+                set.add(find(i * 4 + j));
+            }
+        }
+
+        return set.size();
+
+
+    }
+}

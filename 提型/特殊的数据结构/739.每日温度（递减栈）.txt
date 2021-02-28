@@ -1,0 +1,57 @@
+class Solution {
+
+    class node{
+        int index ;
+        int temperatures;
+
+        public node(){
+
+        }
+
+        public node(int index , int temperatures){
+            this.index = index;
+            this.temperatures = temperatures;
+        }
+
+    }
+
+    public int[] dailyTemperatures(int[] T) {
+
+        int len = T.length;
+        int[] res ;
+        res = new int[len];
+        if(len < 0){
+            return res;
+        }
+        if(len == 1){
+            // res = new int[len];
+            res[0] = 0;
+            return res;
+        }
+        // res = new int[len];
+        Stack<node> s = new Stack<>();
+        node top_node , new_node;
+        for(int i = 0 ; i < len ; i++){
+            if(s.isEmpty() == true || T[i] <= s.peek().temperatures){
+                new_node = new node(i , T[i]);
+                s.push(new_node);
+                continue;
+            }
+            top_node = s.peek();
+            while(s.isEmpty() == false && T[i] > top_node.temperatures){
+                res[top_node.index] = (i - top_node.index);
+                s.pop();
+                if(s.isEmpty() == false){
+                    top_node = s.peek();
+                }
+            }
+            new_node = new node(i , T[i]);
+            s.push(new_node);
+        }
+        while(s.isEmpty() == false){
+            top_node = s.pop();
+            res[top_node.index] = 0;
+        }
+        return res;
+    }
+}

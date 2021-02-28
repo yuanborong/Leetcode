@@ -1,0 +1,69 @@
+class Solution {
+
+    List<String> res ;
+    List<String> temp_list;
+    Set<String> set;
+    int min_word_len;
+    int max_word_len;
+
+    public void toStringWihtBlank(){
+        StringBuffer res_each = new StringBuffer("");
+        for(int i = 0 ; i < temp_list.size() - 1 ;i++){
+            res_each.append(temp_list.get(i));
+            res_each.append(" ");
+        }
+        res_each.append(temp_list.get(temp_list.size() - 1));
+        res.add(res_each.toString());
+        return;
+    }
+
+    public void traceback(String s , int cur_word_start ){
+        if(cur_word_start == s.length()){
+            toStringWihtBlank();
+            return;
+        }
+        if(cur_word_start > s.length() ) return;
+        String curWord;
+        for(int cur_word_end = cur_word_start + min_word_len - 1 ; cur_word_end <= cur_word_start + max_word_len - 1 && cur_word_end <= s.length() - 1 ; cur_word_end++){
+            curWord = s.substring(cur_word_start , cur_word_end + 1);
+            if(set.contains(curWord) == true){
+                temp_list.add(curWord);
+                traceback(s , cur_word_end + 1);
+                temp_list.remove(temp_list.size()-1);
+            }
+        }
+        return ;
+    }
+
+    public List<String> wordBreak(String s, List<String> wordDict) {
+
+        int len_s = s.length();
+        int len_dict = wordDict.size();
+        min_word_len = Integer.MAX_VALUE;
+        max_word_len = Integer.MIN_VALUE;
+        res = new ArrayList<>();
+        temp_list = new ArrayList<>();
+        set = new HashSet<>();
+        for(String str : wordDict){
+            if(str.length() < min_word_len) min_word_len = str.length();
+            if(str.length() > max_word_len) max_word_len = str.length();
+            set.add(str);
+        }
+
+        boolean[] dp = new boolean[len_s+1];
+        String temp_str;
+        dp[0] = true;
+        for(int i = 1 ; i < len_s + 1 ; i++){
+            for(int j = 0 ; j < i ; j++){
+                temp_str = s.substring(j , i);
+                if(dp[j] == true && set.contains(temp_str) == true){
+                    dp[i] = true;
+                    break;
+                }
+            }
+        }
+        if(dp[len_s] == false) return res;
+        traceback(s , 0);
+        return res;
+    }
+}

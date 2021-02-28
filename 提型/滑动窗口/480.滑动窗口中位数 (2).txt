@@ -1,0 +1,43 @@
+class Solution {
+    public double[] medianSlidingWindow(int[] nums, int k) {
+
+        int len = nums.length ;
+        if(len <= 0) return new double[0];
+
+        double[] res = new double[len - k + 1] ;
+
+        PriorityQueue<Integer> small_num = new PriorityQueue<>((a , b) -> {
+            if(nums[b] > nums[a]){
+                return 1 ;
+            }
+            else return -1 ;
+        });
+        PriorityQueue<Integer> big_num = new PriorityQueue<>((a , b) -> {
+            if(nums[a] > nums[b]){
+                return 1 ;
+            }
+            else return -1 ;
+        });
+        int index = 0 ;
+        int temp1 , temp2;
+        for(int i = 0 ; i < len ; i++){
+            big_num.add(i) ;
+            if(big_num.size() - small_num.size() >= 2){
+                small_num.add(big_num.remove()) ;
+            }
+            if(small_num.isEmpty() == false && nums[big_num.peek()] < nums[small_num.peek()]){
+                small_num.add(big_num.remove()) ;
+                big_num.add(small_num.remove()) ;
+            }
+            
+            if(i >= k - 1){
+                res[index++] = (k % 2 == 0) ? (((double)nums[small_num.peek()] + (double)nums[big_num.peek()]) / 2 ) : nums[big_num.peek()] ;
+                small_num.remove(i - k + 1);
+                big_num.remove(i - k + 1);
+            }
+        }
+
+        return res;
+
+    }
+}

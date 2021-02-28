@@ -1,0 +1,70 @@
+class Solution {
+    public int findRotateSteps(String ring, String key) {
+
+        int len_ring = ring.length();
+        int len_key = key.length();
+        char[] ring_arr = ring.toCharArray();
+        char[] key_arr = key.toCharArray();
+
+        // 首先记录ring（圆盘）中所出现的字母的位置，为后面方便查找
+        Map<Character , List<Integer>> map = new HashMap<>();
+        char temp;
+        for(int i = 0 ; i < len_ring ; i++){
+            temp = ring_arr[i];
+            if(map.containsKey(temp) == false) {
+                List<Integer> new_list = new ArrayList<>();
+                new_list.add(i);
+                map.put(temp , new_list);
+            }
+            else{
+                map.get(temp).add(i);
+            }
+        }
+
+        // 动态规划，遍历key中每个字母，上一个状态转到它的最短距离与它的前一个字母的dp值有关
+        // 需要知道key中两个字母的相对距离是不会变的，明确知道前一个字母走了多少步，并且知道当前的index在哪
+        // 那么就可以在这基础上进行选择最优
+        int[][] dp = new int[len_ring][len_key+1];
+
+        int res = Integer.MAX_VALUE;
+        char ch_key , ch_ring , ch_key_pre;
+        List<Integer> temp_list , temp_list_pre;
+        int cur_ch_index , pre_ch_index , cur_step , min_cur_step;
+
+        ch_key = key_arr[0];
+        temp_list = map.get(ch_key);
+        for(int j = 0 ; j < temp_list.size() ; j++){
+            cur_ch_index = temp_list.get(j);
+            dp[cur_ch_index][0] = (cur_ch_index > (len_ring - cur_ch_index))?(len_ring - cur_ch_index):cur_ch_index;
+        }
+
+        for(int i = 1 ; i < len_key ; i++){
+            ch_key = key_arr[i];
+            ch_key_pre = key_arr[i-1];
+            temp_list = map.get(ch_key);
+            temp_list_pre = map.get(ch_key_pre);
+            for(int j = 0 ; j < temp_list.size() ; j++){
+                cur_ch_index = temp_list.get(j);
+                min_cur_step = Integer.MAX_VALUE;
+                for(int k = 0 ; k < temp_list_pre.size() ; k++){
+                    pre_ch_index = temp_list_pre.get(k);
+                    if(cur_ch_index > pre_ch_index){
+                        cur_step = ((cur_ch_index - pre_ch_index) < (len_ring - (cur_ch_index - pre_ch_index))) ? (cur_ch_index - pre_ch_index):(len_ring - (cur_ch_index - pre_ch_index));
+                    }
+                    else{
+                        cur_step = ((pre_ch_index - cur_ch_index) < (len_ring - (pre_ch_index - cur_ch_index))) ? (pre_ch_index - cur_ch_index):(len_ring - (pre_ch_index - cur_ch_index));
+                    }
+                    if((cur_step + dp[pre_ch_index][i-1]) < min_cur_step) min_cur_step = (cur_step + dp[pre_ch_index][i-1]);
+                }
+                dp[cur_ch_index][i] = min_cur_step;
+            }
+        }
+
+        for(int j = 0 ; j < temp_list.size() ; j++){
+            cur_ch_index = temp_list.get(j);
+            if(res > dp[cur_ch_index][len_key-1]) res = dp[cur_ch_index][len_key-1];
+        }
+        return res + len_key;
+
+    }
+}

@@ -1,0 +1,26 @@
+class Solution {
+    public int lastStoneWeightII(int[] stones) {
+
+        int len = stones.length;
+        if(len == 1) return stones[0];
+        int total_weight = 0;
+        int half_weight ;
+        for(int i : stones){
+            total_weight += i;
+        }
+        half_weight = total_weight / 2;
+        int temp , res = 0;
+        int[][] dp = new int[len+1][half_weight+1];
+        for(int i = 1 ; i <= len ; i++){
+            for(int j = 1 ; j <= half_weight ;j++){
+                if(j < stones[i-1]) dp[i][j] = dp[i-1][j];
+                else{
+                    temp = dp[i-1][j-stones[i-1]] + stones[i-1];
+                    dp[i][j] = (temp > dp[i-1][j])?temp:dp[i-1][j];
+                }
+                if(res < dp[i][j]) res = dp[i][j];
+            }
+        }
+        return (total_weight - res) - res;
+    }
+}

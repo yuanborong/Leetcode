@@ -1,0 +1,43 @@
+class Solution {
+public:
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+
+        int len = prerequisites.size();
+        if(numCourses == 0 || len <= 1){
+            return true;
+        }
+        
+        vector<vector<int>> graph(numCourses);
+        vector<int> indegree(numCourses , 0);
+        queue<int> zero_indegree_node;
+        vector<int> topu_sort;
+        int cur_node;
+        for(int i = 0 ; i < len ; i++){
+            graph[prerequisites[i][1]].push_back(prerequisites[i][0]);
+            indegree[prerequisites[i][0]]++;
+        }
+        for(int i = 0 ; i < numCourses ; i++){
+            if(!indegree[i]){
+                zero_indegree_node.push(i);
+            }
+        }
+
+        while(zero_indegree_node.empty() == 0){
+            cur_node = zero_indegree_node.front();
+            zero_indegree_node.pop();
+            topu_sort.push_back(cur_node);
+
+            for(int i = 0 ; i < graph[cur_node].size() ; i++){
+                indegree[graph[cur_node][i]]--;
+                if(!indegree[graph[cur_node][i]]){
+                    zero_indegree_node.push(graph[cur_node][i]);
+                }
+            }
+
+        }
+        
+        return (topu_sort.size() == numCourses);
+
+    }
+};
+

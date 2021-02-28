@@ -1,0 +1,39 @@
+class Solution {
+
+    public List<List<Integer>> res;
+    public List<Integer> cur_list;
+    public boolean[] flag;
+
+    public void dfs(int[] nums , int k , int index){
+        if(cur_list.size() == k){
+            res.add(new ArrayList<>(cur_list));
+            return;
+        }
+        for(int i = index ; i < flag.length ; i++){
+            if(flag[i] == false){
+                flag[i] = true;
+                cur_list.add(nums[i]);
+                dfs(nums , k , i + 1);
+                cur_list.remove(cur_list.size()-1);
+                flag[i] = false;
+            }
+        }
+        return;
+    }
+
+    public List<List<Integer>> subsets(int[] nums) {
+
+        res = new ArrayList<>();
+        int len = nums.length;
+        if(len <= 0){
+            return res;
+        }
+        flag = new boolean[len];
+        cur_list = new ArrayList<>();
+        for(int k = 0 ; k <= len ; k++){
+            dfs(nums , k , 0);
+        }
+        return res;
+
+    }
+}

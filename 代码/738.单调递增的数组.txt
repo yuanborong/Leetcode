@@ -1,0 +1,52 @@
+class Solution {
+    public int monotoneIncreasingDigits(int N) {
+
+        if(N <= 0) return 0;
+        Stack<Integer> a = new Stack<>();
+        // LinkedList<Integer> b = new LinkedList<>();
+        List<Integer> b = new ArrayList<>();
+
+        int temp = N , x;
+        while(temp > 0){
+            x = temp % 10;
+            a.push(x);
+            temp /= 10;
+        }
+        int cur_same = 1;
+        boolean flag = false;
+        while(a.isEmpty() == false){
+            int a_peek = a.pop();
+            if(flag == true){
+                b.add(9);
+                continue;
+            }
+            if(flag == false && b.isEmpty() == false && a_peek < b.get(b.size()-1)){
+                flag = true;
+                int index = b.size() - 1;
+                while(cur_same > 1 ){
+                    b.set(index , 9);
+                    index--;
+                    cur_same--;
+                }
+                b.set(index , b.get(index)-1);
+                b.add(9);
+            }
+            if(flag == false){
+                if(b.isEmpty() == false &&  b.get(b.size()-1) == a_peek){
+                    cur_same++;
+                }
+                else{
+                    cur_same = 1;
+                }
+                b.add(a_peek);
+            }
+        }
+        int res = 0;
+        flag = false;
+        for(int i = 0 ; i < b.size() ; i++){
+            res *= 10;
+            res += b.get(i);
+        }
+        return res;
+    }
+}

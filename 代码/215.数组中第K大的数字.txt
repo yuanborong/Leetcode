@@ -1,0 +1,44 @@
+class Solution {
+
+    public int res ;
+
+    public void partion(int[] nums , int start , int end , int len , int k){
+
+        if(start > end) return;
+        if(start == end){
+            if(start == k - 1){
+                res = nums[start];
+            }
+            return;
+        }
+        int left = start , right = end;
+        int x = nums[left];
+        while(left < right){
+            while(left < right && nums[right] < x) right--;
+            nums[left] = nums[right];
+            while(left < right && nums[left] >= x) left++;
+            nums[right] = nums[left];
+        }
+        nums[left] = x;
+        if(left == k - 1){
+            res = x;
+            return ;
+        }
+        partion(nums , start , left - 1 , len , k);
+        if(res != -1) return;
+        partion(nums , left + 1 , end , len , k);
+        return ;
+
+    }
+
+    public int findKthLargest(int[] nums, int k) {
+
+        int len = nums.length;
+        if(len <= 0) return 0;
+        if(len == 1) return nums[0];
+        res = -1;
+        partion(nums , 0 , len - 1 , len , k);
+        return res;
+
+    }
+}

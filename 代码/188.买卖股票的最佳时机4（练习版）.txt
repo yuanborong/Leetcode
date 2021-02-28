@@ -1,0 +1,35 @@
+// 注意边界的初始化情况！两个矩阵边界初始化情况都是不一样的
+// 难点：边界初始化值
+class Solution {
+    public int maxProfit(int k, int[] prices) {
+
+        int len = prices.length;
+        if(len <= 1) return 0;
+        if(k <= 0) return 0;
+
+        int[][] dpNo = new int[len][k+1];
+        int[][] dpHave = new int[len][k+1];
+
+        dpNo[0][0] = -10000;
+        dpHave[0][0] = -prices[0];
+
+        for(int i = 1 ; i < len ; i++){
+            dpNo[i][0] = -10000;
+            dpHave[i][0] = Math.max(dpHave[i-1][0] , -prices[i]);
+        }
+
+        for(int j = 1 ; j <= k ; j++){
+            dpHave[0][j] = dpHave[0][j-1];
+        }
+        
+        for(int j = 1 ; j <= k ; j++){
+            for(int i = 1 ; i < len ; i++){
+                dpNo[i][j] = Math.max(dpNo[i-1][j] , dpHave[i-1][j-1] + prices[i]);
+                dpHave[i][j] = Math.max(dpHave[i-1][j] , dpNo[i-1][j] - prices[i]);
+            }
+        }
+        int res = Math.max(dpNo[len-1][k] , dpHave[len-1][k]);
+        return Math.max(res , 0);
+
+    }
+}

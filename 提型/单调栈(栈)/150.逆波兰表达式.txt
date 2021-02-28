@@ -1,0 +1,39 @@
+class Solution {
+
+    public int evalRPN(String[] tokens) {
+
+        int len = tokens.length;
+        if(len == 0){
+            return 0;
+        }
+        Stack<Integer> opt_num = new Stack<>();
+        int temp ;
+        int opt2 , opt1;
+        char ch;
+        for(int i = 0 ; i < len ; i++){
+            ch = tokens[i].charAt(0);
+            if((ch >= '0' && ch <= '9') || tokens[i].length() > 1){
+                temp = Integer.valueOf(tokens[i]);
+                opt_num.add(temp);
+            }
+            else{
+                opt2 = opt_num.pop();
+                opt1 = opt_num.pop();
+                if(ch == '+'){
+                    temp = opt1 + opt2;
+                }
+                else if(ch == '-'){
+                    temp = opt1 - opt2;
+                }
+                else if(ch == '*'){
+                    temp = opt1 * opt2;
+                }
+                else{
+                    temp = opt1 / opt2;
+                }
+                opt_num.add(temp);
+            }
+        }
+        return opt_num.pop();
+    }
+}

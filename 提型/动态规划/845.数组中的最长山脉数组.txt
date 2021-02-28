@@ -1,0 +1,33 @@
+class Solution {
+    public int longestMountain(int[] A) {
+
+        int len = A.length;
+        if(len < 3) return 0;
+
+        // left数组记录着当前位置的左边（不包括当前位置）总共有多少个是在递增的
+        // right数组记录着当前位置的右边（不包括当前位置）总共有多少个是在递减的
+        int[] left = new int[len];
+        int[] right = new int[len];
+        int res = 0;
+        for(int i = 1 ; i < len ; i++){
+            if(A[i] - A[i-1] > 0){
+                left[i] = left[i-1] + 1;
+            }
+        }
+
+        for(int i = len - 2 ; i > 0 ; i--){
+            if(A[i+1] - A[i] < 0){
+                right[i] = right[i+1] + 1;
+            }
+        }
+
+        for(int i = 1 ; i <= len - 2 ; i++){
+            if(left[i] > 0 && right[i] > 0){
+                res = (res < (left[i] + right[i] + 1))?(left[i] + right[i] + 1):res;
+            }
+        }
+
+        return res;
+
+    }
+}

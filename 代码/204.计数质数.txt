@@ -1,0 +1,25 @@
+// 排除法，每个非质数都是由比他小的质数的倍数
+// 第一遍遍历：查找这些遍历值可能产生的非质数。由于乘法交换律，仅需遍历sqrt(n)的值就行
+// 如果是一个质数，那么将他可能产生的所有非质数删除。找他的*2、*3、*4，循环中就是不断加他本身就可以啦
+// 碰到一个质数开始排除，从i * i 而不是i * 2开始即可
+class Solution {
+    public int countPrimes(int n) {
+
+        boolean[] flag = new boolean[n+1];
+        if(n == 0 || n == 1) return 0;
+        for(int i = 2 ; i <= n ; i++) flag[i] = true;
+        for(int i = 2 ; i * i <= n ; i++){
+            if(flag[i] == true){
+                for(int j = i * i; j <= n ; j += i){
+                    flag[j] = false;
+                }
+            }
+        }
+        int res = 0;
+        for(int i = 1 ; i < n ; i++){
+            if(flag[i]) res++;
+        }
+        return res;
+
+    }
+}

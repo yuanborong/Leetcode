@@ -1,0 +1,17 @@
+class Solution {
+
+    public int gcd(int x , int y){
+        if(y == 0) return x ;
+        int c = x % y ;
+        return gcd(y , c);
+    }
+
+    public boolean canMeasureWater(int x, int y, int z) {
+
+        if(x + y < z ) return false;
+        if(z == 0) return true;
+        int gongyueshu = gcd(x , y);
+        return (z % gongyueshu == 0);
+
+    }
+}

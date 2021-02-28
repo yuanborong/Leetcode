@@ -1,0 +1,40 @@
+class Solution {
+public:
+    vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
+
+        vector<int> res;
+        int len = prerequisites.size();
+        if(numCourses == 0){
+            return res;
+        }
+        vector<vector<int>> graph(numCourses);
+        vector<int> indegree(numCourses , 0);
+        queue<int> zeros_indegree;
+        for(int i = 0 ; i < len ; i++){
+            graph[prerequisites[i][1]].push_back(prerequisites[i][0]);
+            indegree[prerequisites[i][0]]++;
+        }
+        for(int i = 0 ; i < numCourses ; i++){
+            if(!indegree[i]){
+                zeros_indegree.push(i);
+            }
+        }
+        int cur_course;
+        while(!zeros_indegree.empty()){
+            cur_course = zeros_indegree.front();
+            zeros_indegree.pop();
+            res.push_back(cur_course);
+            for(int i = 0 ; i < graph[cur_course].size() ; i++){
+                if((--indegree[graph[cur_course][i]]) == 0){
+                    zeros_indegree.push(graph[cur_course][i]);
+                }
+            }
+        }
+        if(res.size() < numCourses){
+            res.clear();
+        }
+        return res;
+
+
+    }
+};

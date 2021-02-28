@@ -1,0 +1,20 @@
+class Solution {
+public:
+    int rangeBitwiseAnd(int m, int n) {
+
+        if(m == n){
+            return m;
+        }
+        int zeros = 0;
+        while(m != n){
+            zeros++;
+            m >>= 1;
+            n >>= 1;
+        }
+        return (m << zeros);
+
+    }
+};
+
+
+//找相同前缀，不同的后缀递增后所有数相与肯定为0（每一位都是010101跳动）

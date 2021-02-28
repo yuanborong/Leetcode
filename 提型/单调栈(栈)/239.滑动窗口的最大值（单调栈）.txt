@@ -1,0 +1,37 @@
+class Solution {
+    public int[] maxSlidingWindow(int[] nums, int k) {
+
+        int len = nums.length;
+        if(len <= 0){
+            return new int[1];
+        }
+        List<Integer> stack = new ArrayList<>();
+        int[] res = new int[len-k+1];
+        int left = 0 ; 
+        int right = 0;
+        int res_index = 0;
+        while(right < len){
+            if((right - left) < k){
+                if(stack.isEmpty() == true){
+                    stack.add(nums[right]);
+                    right++;
+                }
+                else{
+                    while(stack.isEmpty() == false && stack.get(stack.size()-1) < nums[right]) stack.remove(stack.size()-1);
+                    stack.add(nums[right]);
+                    right++;
+                }
+            }
+            else{
+                res[res_index++] = stack.get(0);
+                if(stack.get(0) == nums[left]) stack.remove(0);
+                left++;
+                while(stack.isEmpty() == false && stack.get(stack.size()-1) < nums[right]) stack.remove(stack.size()-1);
+                stack.add(nums[right]);
+                right++;
+            }
+            res[res_index] = stack.get(0);
+        }
+        return res;
+    }
+}

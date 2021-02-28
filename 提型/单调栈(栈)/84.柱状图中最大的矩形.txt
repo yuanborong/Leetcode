@@ -1,0 +1,28 @@
+class Solution {
+    public int largestRectangleArea(int[] heights) {
+
+        int len = heights.length;
+        if(len <= 0){
+            return 0;
+        }
+        int res = 0;
+        int[] temp_arr = new int[len + 2];
+        //arraycopy(Object src, int srcPos, Object dest, int destPos, int length)
+        //src源数组,srcPos源数组起始位置,dest目标数组,destPos目标数组起始位置
+        System.arraycopy(heights , 0 , temp_arr , 1 , len);
+
+        // 对栈中柱体来说，栈中的下一个柱体就是其「左边第一个小于自身的柱体」；
+        // 若当前柱体 i 的高度小于栈顶柱体的高度，说明 i 是栈顶柱体的「右边第一个小于栈顶柱体的柱体」。
+        // 因此以栈顶柱体为高的矩形的左右宽度边界就确定了，可以计算面积
+        Stack<Integer> s = new Stack<>();
+        for(int i = 0 ; i < temp_arr.length ; i++){
+            while(s.isEmpty() == false && temp_arr[s.peek()] > temp_arr[i]){
+                int peek_index = s.pop();
+                int cur_square = temp_arr[peek_index] * (i - s.peek() - 1);
+                res = (res < cur_square)?cur_square:res;
+            }
+            s.push(i);
+        }
+        return res;
+    }
+}

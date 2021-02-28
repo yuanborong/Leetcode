@@ -1,0 +1,51 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+
+
+// 要点1：把所有的树节点都分为3种状态：
+// 0：该节点装了监控
+// 1：该节点可观察，但是没装监控
+// 2：该节点目前不可监控
+// 要点2：深度优先，从底部（叶子节点）向上考虑，底部节点反馈底部信息给上层，上层依据底部内容进行判断
+// 要点3：叶子节点统一不装监控，由叶子节点的父亲装监控
+
+class Solution {
+
+    private int res ; 
+
+    public int dfs(TreeNode root){
+        if(root == null){
+            return 1;
+        }
+        int left_leaf_states = dfs(root.left);
+        int right_leaf_states = dfs(root.right);
+        if(left_leaf_states == 2 || right_leaf_states == 2){
+            res++;
+            return 0;
+        }
+        if(left_leaf_states == 0 || right_leaf_states == 0){
+            return 1;
+        }
+        return 2;
+
+    }
+
+    public int minCameraCover(TreeNode root) {
+        if(root == null){
+            return 0;
+        }
+        res = 0;
+        int state = dfs(root);
+        if(state == 2){
+            res++;
+        }
+        return res;
+    }
+}

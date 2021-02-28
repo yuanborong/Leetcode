@@ -1,0 +1,54 @@
+class Solution {
+public:
+
+    int res ;
+
+    void collection(vector<int> &nums , int left , int right){
+
+        if(left >= right){
+            return;
+        }
+        int mid = (left + right) / 2 ;
+        collection(nums , left , mid);
+        collection(nums , mid + 1 , right);
+        vector<int> temp ;
+
+        int index_left = left , index_right = mid + 1; 
+        while(index_left <= mid && index_right <= right){
+            if(nums[index_left] > nums[index_right]){
+                res += (mid - index_left + 1);
+                temp.push_back(nums[index_right++]);
+            }
+            else if(nums[index_left] <= nums[index_right]){
+                temp.push_back(nums[index_left++]);
+            }
+        }
+        while(index_left <= mid){
+            temp.push_back(nums[index_left++]);
+        }
+        while(index_right <= right){
+            temp.push_back(nums[index_right++]);
+        }
+        for(int i = 0 , j = left ; i < temp.size() ; i++ , j++){
+            nums[j] = temp[i];
+        }
+        return;
+
+    }
+
+    int reversePairs(vector<int>& nums) {
+
+        int len = nums.size();
+        if(len <= 1){
+            return 0;
+        }
+        res = 0;
+        // for(int i = 0 ; i < len ; i++){
+        //     sort_nums.push_back(-1);
+        // }
+        collection(nums , 0 , len - 1);
+        return res;
+
+
+    }
+};

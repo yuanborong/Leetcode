@@ -1,0 +1,28 @@
+class Solution {
+    public String sortString(String s) {
+
+        char[] arr_s = s.toCharArray();
+        int len = arr_s.length;
+        if(len <= 0) return "";
+
+        int[] count = new int[26];
+        int temp_index ;
+        for(char ch : arr_s){
+            temp_index = ch - 'a';
+            count[temp_index]++;
+        }
+
+        StringBuffer sb = new StringBuffer();
+        while(sb.length() < len){
+            for(int i = 0 ; sb.length() < len && i <26 ; i++){
+                if(count[i] > 0) sb.append((char)('a' + i));
+                count[i]--;
+            }
+            for(int i = 25 ; sb.length() < len && i >= 0  ; i--){
+                if(count[i] > 0) sb.append((char)('a' + i));
+                count[i]--;
+            }
+        }    
+        return sb.toString();
+    }
+}

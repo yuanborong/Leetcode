@@ -1,0 +1,43 @@
+class Solution {
+
+    boolean[] flag ;
+    List<List<Integer>> res;
+    List<Integer> cur_list ;
+
+    public void dfs(int[] nums){
+        if(nums.length == cur_list.size()){
+            res.add(new ArrayList<>(cur_list));
+            return;
+        }
+        for(int i = 0 ; i < nums.length ; i++){
+            if(flag[i] == true){
+                continue;
+            }
+            if(i > 0 && flag[i-1] == false && nums[i-1] == nums[i]){
+                continue;
+            }
+            cur_list.add(nums[i]);
+            flag[i] = true;
+            dfs(nums);
+            flag[i] = false;
+            cur_list.remove(cur_list.size()-1);
+        }
+        return;
+    }
+
+    public List<List<Integer>> permuteUnique(int[] nums) {
+
+        int len = nums.length;
+        res = new ArrayList<>();
+        if(len <= 0){
+            cur_list = new ArrayList<>();
+            res.add(cur_list);
+            return res;
+        }
+        Arrays.sort(nums);
+        flag = new boolean[len];
+        cur_list = new ArrayList<>();
+        dfs(nums);
+        return res;
+    }
+}

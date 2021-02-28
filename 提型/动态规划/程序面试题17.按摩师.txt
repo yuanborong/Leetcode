@@ -1,0 +1,34 @@
+class Solution {
+public:
+    int massage(vector<int>& nums) {
+
+        int len = nums.size();
+        if(len == 0 ){
+            return 0;
+        }
+        if(len == 1){
+            return nums[0];
+        }
+        
+        vector<int> except_maximun(len);
+        vector<int> include_maximun(len);
+
+        include_maximun[0] = nums[0];
+        include_maximun[1] = nums[1];
+        except_maximun[0] = 0;
+        except_maximun[1] = nums[0];
+        int res = (nums[0] > nums[1])? nums[0]:nums[1];
+
+        for(int i = 2 ; i < len ; i++){
+            include_maximun[i] = (include_maximun[i-2] > except_maximun[i-1])?include_maximun[i-2]:except_maximun[i-1];
+            include_maximun[i] += nums[i];
+            except_maximun[i] = res;
+
+            if(res < include_maximun[i]){
+                res = include_maximun[i];
+            }
+        }
+        return res;
+
+    }
+};

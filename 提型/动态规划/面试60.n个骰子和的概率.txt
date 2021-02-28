@@ -1,0 +1,54 @@
+class Solution {
+public:
+
+    vector<double> twoSum(int n) {
+
+        vector<double> res;
+
+        if(n == 0){
+            return res;
+        }
+        int sum = 0;
+        vector<vector<double>> dp(n+1 , vector<double>(n*6+1 , 0));
+        for(int i = 1 ; i <= 6 ; i++){
+            dp[1][i] = 1;
+        }
+
+        if(n == 1){
+            for(int i = 0 ; i < 6 ; i++){
+                res.push_back(1);
+                res[i] /= 6;
+            }
+            return res;
+        }
+
+        for(int i = 2 ; i <= n ; i++){
+            for(int j = i ; j <= i * 6 ; j++){
+                dp[i][j] = 0;
+                for(int k = 1 ; k <= 6 ; k++){
+                    if((j - k) <= 0){
+                        break;
+                    }
+                    dp[i][j] += dp[i-1][j-k];
+                }
+                if(i == n){
+                    res.push_back(dp[i][j]);
+                    sum += dp[i][j];
+                }
+            }
+        }
+        for(int i = 0 ; i < res.size() ; i++){
+            res[i] /= sum;
+        }
+        return res;
+
+    }
+};
+
+
+//P(n,sum)=p(n-1,sum-1)+p(n-1,sum-2)+...+p(n-1,sum-6)
+
+//其中如果sum-i<0,则认为p(n-1,sum-i)=0
+其原理是把n-1个骰子看作一个骰子，把第n个骰子看作一个骰子，
+//这样除了n=1，n>=2的所有情况都可以看作是两个骰子的情况。而第n个骰子只有6种可能，所以把sum-1到sum-6都加上就行了。
+//由于每一行的dp[i].size()不一样，所以要注意数组越界问题。

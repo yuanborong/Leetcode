@@ -1,0 +1,60 @@
+class Solution {
+
+    private int[] location ;
+    private int res_num ;
+    private boolean[] flag;
+
+    private double getXieLv(int i1 , int j1 , int i2 , int j2){
+        boolean res = true;
+        double xielv = (double)(j1 - j2) / (double)(i1 - i2);
+        return xielv;
+    }
+
+    private boolean check(int n){
+        double xielv;
+        for(int i = 0 ; i < n ; i++){
+            for(int j = i + 1 ; j < n ; j++){
+                xielv = getXieLv(i , location[i] , j , location[j]);
+                if(xielv == 1 || xielv == -1){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private void traceback(int row , int n){
+        if(row > n){
+            return;
+        }
+        if(row == n){
+            if(check(n) == true){
+                res_num++;
+            }
+            return;
+        }
+        for(int i = 0 ; i < n ; i ++){
+            if(flag[i] == false){
+                flag[i] = true;
+                location[row] = i;
+                traceback(row + 1 , n);
+                location[row] = -1;
+                flag[i] = false;
+            }
+        }
+        return;
+    }
+
+    public int totalNQueens(int n) {
+
+        res_num = 0;
+        location = new int[n];
+        for(Integer loc : location){
+            loc = -1;
+        }
+        flag = new boolean[n];
+        traceback(0 , n);
+        return res_num;
+
+    }
+}

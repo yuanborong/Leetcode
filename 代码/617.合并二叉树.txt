@@ -1,0 +1,61 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+
+    private TreeNode res;
+
+    public int getSum(TreeNode t1 , TreeNode t2){
+        if(t1 == null && t2 == null){
+            return -100000;
+        }
+        int sum = 0;
+        sum += (t1 == null)?0:t1.val;
+        sum += (t2 == null)?0:t2.val;
+        return sum;
+    }
+
+    public void dfs(TreeNode t1 , TreeNode t2 , TreeNode parent , boolean isLeft){
+        
+        int sum = getSum(t1 , t2);
+        if(sum == -100000){
+            return ;
+        }
+        TreeNode new_node = new TreeNode(sum);
+        if(isLeft == true){
+            parent.left = new_node;
+        }
+        else{
+            parent.right = new_node;
+        }
+        if(t1 != null && t2 != null){
+            dfs(t1.left , t2.left , new_node , true);
+            dfs(t1.right , t2.right , new_node , false);
+        }
+        else if(t1 != null){
+            dfs(t1.left , null , new_node , true);
+            dfs(t1.right , null , new_node , false);
+        }
+        else{
+            dfs(null , t2.left , new_node , true);
+            dfs(null , t2.right , new_node , false);
+        }
+        return;
+    }
+
+    public TreeNode mergeTrees(TreeNode t1, TreeNode t2) {
+
+        if(t1 == null || t2 == null){
+            return (t1 == null)?t2:t1;
+        }
+        res = new TreeNode(-1);
+        dfs(t1 , t2 , res , true);
+        return res.left;
+    }
+}

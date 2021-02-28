@@ -1,0 +1,47 @@
+class DSU{
+
+    public int[] parent ;
+
+    public DSU(int len){
+        this.parent = new int[len];
+        for(int i = 0 ; i < len ; i++){
+            parent[i] = i;
+        }
+    }
+
+    public int find(int x){
+        return (x == parent[x]) ? x : find(parent[x]);
+    }
+
+    public void union(int x , int y){
+        int root_x = find(x);
+        int root_y = find(y);
+        if(root_x < root_y){
+            parent[root_y] = root_x;
+        }
+        else parent[root_x] = root_y;
+        return;
+    }
+
+}
+
+class Solution {
+    public int[] findRedundantConnection(int[][] edges) {
+
+        int len = edges.length;
+        int[] res ;
+        if(len <= 0) return new int[0];
+        int N = len;
+
+        DSU dsu = new DSU(N+1);
+        for(int i = 0 ; i < len ; i++){
+            int x = edges[i][0];
+            int y = edges[i][1];
+            if(dsu.find(x) == dsu.find(y)) return edges[i];
+            dsu.union(x , y);
+        }
+
+        return new int[0];
+
+    }
+}

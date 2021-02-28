@@ -1,0 +1,38 @@
+class Solution {
+
+    //总的说来，用递归进行穷举，中间过程可剪枝
+    public List<List<Integer>> result;
+    public List<Integer> cur_list;
+
+    public void dfs(int[] candidates , int sum , int index , int len){
+        if(sum == 0){
+            result.add(new ArrayList<Integer>(cur_list));
+            return ;
+        }
+        if(index >= len || candidates[index] > sum){
+            return ;
+        }
+        for(int i = index ; i < len ; i++){
+            cur_list.add(candidates[i]);
+            dfs(candidates , sum-candidates[i] , i , len);
+            cur_list.remove(cur_list.size() - 1);
+        }
+        return;
+    }
+
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+
+        result = new ArrayList<>();
+        cur_list = new ArrayList<>();
+        int len = candidates.length;
+        if(len <= 0){
+            return result;
+        }
+        // 首先先排序
+        Arrays.sort(candidates);
+        //
+        dfs(candidates , target , 0 , len);
+        return result;
+
+    }
+}

@@ -1,0 +1,27 @@
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public int[] reversePrint(ListNode head) {
+
+        List<Integer> res = new ArrayList<>();
+        if(head == null){
+            return res.stream().mapToInt(Integer::valueOf).toArray();
+        }
+
+        ListNode p = head;
+        while(p != null){
+            res.add(p.val);
+            p = p.next;
+        }
+        Collections.reverse(res);
+        
+        return res.stream().mapToInt(Integer::valueOf).toArray();
+
+    }
+}

@@ -1,0 +1,76 @@
+class Node{
+
+    public Node[] arr;
+    public int len;
+    public boolean isEnd ;
+
+    public Node(){
+        this.arr = new Node[26];
+        this.len = 0;
+        this.isEnd = false;
+    }
+
+}
+
+class Trie {
+
+    public Node root;
+    // public int max_length;
+
+    /** Initialize your data structure here. */
+    public Trie() {
+        this.root = new Node();
+        // this.max_length = 0;
+    }
+    
+    /** Inserts a word into the trie. */
+    public void insert(String word) {
+        char[] arr_word = word.toCharArray();
+        Node p = this.root;
+        for(int i = 0 ; i < arr_word.length ; i++){
+            if(p.arr[arr_word[i]-'a'] == null){
+                Node new_node = new Node();
+                p.arr[arr_word[i]-'a'] = new_node;
+            }
+            p = p.arr[arr_word[i]-'a'];
+        }
+        p.isEnd = true;
+        return;
+    }
+    
+    /** Returns if the word is in the trie. */
+    public boolean search(String word) {
+        Node p = this.root;
+        int len = word.length();
+        int index = 0;
+        while(p != null && index < len){
+            if(p.arr[word.charAt(index)-'a'] == null) return false;
+            p = p.arr[word.charAt(index)-'a'];
+            index++;
+        }
+        if(index < len || p.isEnd == false) return false;
+        return true;
+    }
+    
+    /** Returns if there is any word in the trie that starts with the given prefix. */
+    public boolean startsWith(String prefix) {
+        Node p = this.root;
+        int len = prefix.length();
+        int index = 0;
+        while(p != null && index < len){
+            if(p.arr[prefix.charAt(index)-'a'] == null) return false;
+            p = p.arr[prefix.charAt(index)-'a'];
+            index++;
+        }
+        if(index < len) return false;
+        return true;
+    }
+}
+
+/**
+ * Your Trie object will be instantiated and called as such:
+ * Trie obj = new Trie();
+ * obj.insert(word);
+ * boolean param_2 = obj.search(word);
+ * boolean param_3 = obj.startsWith(prefix);
+ */

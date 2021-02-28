@@ -1,0 +1,48 @@
+// 问题抽象：可以组成一个图，图中节点就是每个出现的单词，两个点相连就是一个两个单词间距离为1
+// 问题转化：判断始点与终点间的一个最短路径
+// 一个无向图中两个节点的最短路径：广度优先遍历（BFS）
+// 一个有向带权图中两个节点的最短路径：迪杰斯特拉算法和普利姆算法
+
+class Solution {
+    public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+        
+        int word_len = beginWord.length();
+        int list_len = wordList.size();
+        if(word_len == 0 || list_len == 0) return 0;
+    
+        Set<String> wordSet = new HashSet<>();
+        for(String str : wordList){
+            wordSet.add(str);
+        }
+
+        Queue<String> queue = new LinkedList<>();
+        Queue<Integer> queue_step = new LinkedList<>();
+        Set<String> visitedWord = new HashSet<>();
+
+        queue.add(beginWord);
+        queue_step.add(1);
+        String bottonQueueString ;
+        String changedString ;
+        int cur_step ;
+        while(queue.isEmpty() == false){
+            bottonQueueString = queue.remove();
+            cur_step = queue_step.remove();
+
+            for(int i = 0 ; i < word_len ; i++){
+                char[] temp = bottonQueueString.toCharArray();
+                for(char ch = 'a' ; ch <= 'z' ; ch++){
+                    temp[i] = ch;
+                    changedString = String.valueOf(temp);
+                    if(visitedWord.contains(changedString) == false && wordSet.contains(changedString) == true){
+                        if(changedString.equals(endWord) == true) return cur_step + 1;
+                        visitedWord.add(changedString);
+                        queue.add(changedString);
+                        queue_step.add(cur_step + 1);
+                    }
+                }
+            }
+
+        }
+        return 0;
+    }
+}

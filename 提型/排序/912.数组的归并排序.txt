@@ -1,0 +1,42 @@
+class Solution {
+
+    public void mergeSort(int[] nums , int start , int end){
+
+        if(start >= end) return;
+        int mid = (end + start) / 2;
+        mergeSort(nums , start , mid);
+        mergeSort(nums , mid + 1 , end);
+        int[] new_arr = new int[end - start + 1];
+        int i = start , j = mid + 1 , index = 0;
+        while(i <= mid && j <= end){
+            if(nums[i] > nums[j]){
+                new_arr[index] = nums[j];
+                j++;
+            }
+            else{
+                new_arr[index] = nums[i];
+                i++;
+            }
+            index++;
+        }
+        while(i <= mid){
+            new_arr[index++] = nums[i++];
+        }
+        while(j <= end){
+            new_arr[index++] = nums[j++];
+        }
+        System.arraycopy(new_arr , 0 , nums , start , (end - start + 1));
+        return;
+
+    }
+
+    public int[] sortArray(int[] nums) {
+
+        int len = nums.length;
+        if(len <= 1) return nums;
+
+        mergeSort(nums , 0 , len - 1);
+        return nums;
+
+    }
+}

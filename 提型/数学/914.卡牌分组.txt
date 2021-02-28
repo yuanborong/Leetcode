@@ -1,0 +1,33 @@
+class Solution {
+
+    public int get(int a , int b){
+        // 0和一个正整数的辗转相除法的结果，直接返回这个正整数
+        if(a == 0 || b == 0) return (a == 0) ? b : a;
+        int c = a % b;
+        if(c == 0) return b;
+        return get(b , c);
+    }
+
+    public boolean hasGroupsSizeX(int[] deck) {
+
+        int len = deck.length;
+        if(len <= 1) return false;
+
+        int[] count = new int[10000];
+
+        for(int i : deck) count[i]++;
+
+        int max_gongyue = 0; 
+
+        for(int i : count){
+            if(i > 0){
+                max_gongyue = get(max_gongyue , i);
+                // 多个元素的最大公因数，不断更新这个最大公约数，随着元素增多它只会不断变小
+                // 所以变到1的时候，随着元素增多这个可不会再变大了
+                if(max_gongyue == 1) return false;
+            }
+        }
+        return true;
+
+    }
+}

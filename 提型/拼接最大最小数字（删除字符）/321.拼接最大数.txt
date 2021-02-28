@@ -1,0 +1,66 @@
+class Solution {
+    public int[] maxNumber(int[] nums1, int[] nums2, int k) {
+
+        int len1 = nums1.length;
+        int len2 = nums2.length;
+        int[] res = new int[k];
+        for(int i = 0 ; i <= len1 && i <= k ; i++){
+            int j = k - i;
+            if(j > len2) continue;
+            int[] child_nums1 = getMaxArray(nums1 , i);
+            int[] child_nums2 = getMaxArray(nums2 , j);
+            int[] mergedList = mergeTwoList(child_nums1 , child_nums2);
+            if(compare(mergedList , 0 , res , 0)) res = mergedList;
+        }
+        return res;
+
+    }
+
+    // 维护一个单调递减栈
+    public int[] getMaxArray(int[] nums , int k){
+        int len = nums.length;
+        // 由于要取k个值，相当于要删掉len-k个值（记录我们删掉的值的做法是可以更方便）
+        int[] res = new int[k];
+        int cur = 0 , romve_count = len - k;
+        for(int i = 0 ; i < len ; i++){
+            while(cur > 0 && res[cur-1] < nums[i] && romve_count > 0){
+                cur--;
+                romve_count--;
+            }
+            if(cur < k){
+                res[cur++] = nums[i];
+            }
+            else{
+                romve_count--;
+            }
+        }
+        return res;
+    }
+
+    public int[] mergeTwoList(int[] nums1 , int[] nums2){
+        int len1 = nums1.length;
+        int len2 = nums2.length;
+
+        int[] res = new int[len1 + len2];
+        int k1 = 0 , k2 = 0;
+        for(int i = 0 ; i < len1 + len2 ; i++){
+            if(compare(nums1 , k1 , nums2 , k2)){
+                res[i] = nums1[k1++];
+            }
+            else{
+                res[i] = nums2[k2++];
+            }
+        }
+        return res;
+
+    }
+
+    public boolean compare(int[] nums1 , int k1 , int[] nums2 , int k2){
+        if(k1 >= nums1.length) return false;
+        if(k2 >= nums2.length) return true;
+        if(nums1[k1] > nums2[k2]) return true;
+        if(nums1[k1] < nums2[k2]) return false;
+        return compare(nums1 , k1 + 1 , nums2 , k2 + 1);
+    }
+
+}

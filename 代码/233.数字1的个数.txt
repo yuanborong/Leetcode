@@ -1,0 +1,22 @@
+class Solution {
+    public int countDigitOne(int n) {
+
+        int a , b , c = 1 , d = 0 ,temp_n = n; 
+        int res = 0;
+        while(temp_n > 0){
+            a = temp_n / 10;
+            b = temp_n % 10;
+            res += (c * a);
+            if(b == 1){
+                res += (d + 1);
+            }
+            if(b > 1){
+                res += c;
+            }
+            d += (b * c);
+            c *= 10;
+            temp_n /= 10;
+        }
+        return res;
+    }
+}

@@ -1,0 +1,111 @@
+class LFUCache {
+
+    HashMap<Integer , Node> main_map;
+    HashMap<Integer , LinkedHashSet<Node>> fre_map;
+    int min_fre;
+    int cache_size;
+    int capacity;
+
+    public LFUCache(int capacity) {
+
+        this.cache_size = 0;
+        this.min_fre = 0;
+        this.capacity = capacity;
+        this.main_map = new HashMap<>(capacity);
+        this.fre_map = new HashMap<>();
+
+    }
+    
+    public int get(int key) {
+
+        if(cache_size == 0 || main_map.containsKey(key) == false){
+            return -1;
+        }
+        Node cur_node = main_map.get(key);
+        fre_increase(cur_node);
+        return cur_node.value;
+
+    }
+    
+    public void put(int key, int value) {
+
+        if(capacity == 0){
+            return;
+        }
+        Node new_node = new Node(key , value);
+        //原本缓存里面没有这页面，要不要置换也要看cache还有没有容量
+        if(main_map.containsKey(key) == false){
+            //没位置了，就要先去掉一个节点先
+            if(cache_size == capacity){
+                LinkedHashSet<Node> removing_linkedset = fre_map.get(min_fre);
+                Node removing_node = removing_linkedset.iterator().next();
+                removing_linkedset.remove(removing_node);
+                main_map.remove(removing_node.key);
+                cache_size--;
+            }
+            main_map.put(key , new_node);
+            LinkedHashSet<Node> one_linkedset = fre_map.get(1);
+            if(one_linkedset == null){
+                one_linkedset = new LinkedHashSet<>();
+                fre_map.put(1 , one_linkedset);
+            }
+            one_linkedset.add(new_node);
+            min_fre = 1;
+            cache_size++;
+
+        }
+        //原本缓存里面有，那么就不用置换别的了
+        else{
+            Node cur_node = main_map.get(key);
+            cur_node.value = value;
+            fre_increase(cur_node);
+        }
+        return;
+
+    }
+
+    public void fre_increase(Node node){
+
+        LinkedHashSet<Node> from_linkedset = fre_map.get(node.frequency++);
+        LinkedHashSet<Node> to_linkedset = fre_map.get(node.frequency);
+        if(to_linkedset == null){
+            to_linkedset = new LinkedHashSet<>();
+            fre_map.put(node.frequency , to_linkedset);
+        }
+        from_linkedset.remove(node);
+        if(min_fre == node.frequency - 1 && from_linkedset.size() == 0){
+            min_fre = node.frequency;
+        }
+        to_linkedset.add(node);
+        return;
+
+    }
+
+}
+
+class Node{
+
+    int key;
+    int value;
+    int frequency;
+
+    public Node(){
+
+    }
+
+    public Node(int key , int value){
+        this.value = value;
+        this.key = key;
+        this.frequency = 1;
+    }
+
+}
+
+
+
+/**
+ * Your LFUCache object will be instantiated and called as such:
+ * LFUCache obj = new LFUCache(capacity);
+ * int param_1 = obj.get(key);
+ * obj.put(key,value);
+ */

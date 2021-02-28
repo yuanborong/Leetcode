@@ -1,0 +1,41 @@
+class Solution {
+    //最终窗口长度就为最终的结果
+    //碰到合适的情况就可以，通过左指针不动，右指针右移来扩大窗口长度
+    //什么时候扩大窗口：如果加入了当前字符后，出现最多的字符数量+k次变换 >= 当前窗口的长度，那么这个就是合理的，可以进行扩大窗口
+    //加入当前窗口最多的数量+k < 当前窗口的长度，那么就不行，窗口平移一下考虑之后的情况
+
+    //关于为啥窗口平移时并不用更新出现最多的字符的数量？
+    //历史最多字符数量 > 当前窗口字符最多数量是一直都成立的。那么循环中每次都只有两种操作：一种是窗口平移，一种是扩大窗口
+    //先判断是否平移窗口？如果“当前窗口最多的数量+k < 当前窗口的长度”时，就可以平移窗口。
+    //那么此时发现，如果当“历史最多的数量+k < 当前窗口的长度”时，那么肯定有“当前窗口最多的数量+k < 当前窗口的长度”，就可以平移窗口
+    //上述解释就能证明，循环下来，不用更新窗口内出现次数最多字符的数量，仅需保存历史最多数量就可以啦
+
+    public int characterReplacement(String s, int k) {
+
+        int len = s.length();
+        if(len <= k){
+            return len;
+        }
+        int left = 0 ;
+        int right = 0 ;
+        int max_count = 0;
+        char max_ch ;
+        int[] ch_count = new int[26];
+        char[] ch_arr = s.toCharArray();
+        while(right < len){
+            ch_count[ch_arr[right] - 'A']++;
+            if(ch_count[ch_arr[right] - 'A'] > max_count){
+                max_count = ch_count[ch_arr[right] - 'A'];
+            }
+            if(max_count + k >= (right - left + 1)){
+                right++;
+            }
+            else{
+                right++;
+                ch_count[ch_arr[left] - 'A']--;
+                left++;
+            }
+        }
+        return (right - left);
+    }
+}

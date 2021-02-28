@@ -1,0 +1,17 @@
+class Solution {
+    public int maxProfit(int[] prices) {
+        
+        int len = prices.length;
+        if(len < 2 ) return 0;
+
+        int res = 0; 
+        int diff ;
+        for(int i = 1 ; i < len ; i++){
+            diff = prices[i] - prices[i-1];
+            res += ((diff > 0)?diff:0);
+        }
+
+        return res;
+
+    }
+}

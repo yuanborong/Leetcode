@@ -1,0 +1,83 @@
+class Solution {
+    public double[] medianSlidingWindow(int[] nums, int k) {
+
+        int len = nums.length;
+        double[] res = new double[len-k+1];
+        int res_index = 0;
+        if(len <= 0){
+            return res;
+        }
+
+        PriorityQueue<Integer> small = new PriorityQueue<>(new Comparator<>(){
+            @Override
+            public int compare(Integer index1 , Integer index2){
+                return (int)((long)(nums[index2]) - (long)(nums[index1]));
+            }
+        });
+        PriorityQueue<Integer> big = new PriorityQueue<>(new Comparator<>(){
+            @Override
+            public int compare(Integer index1 , Integer index2){
+                return (int)((long)(nums[index1]) - (long)(nums[index2]));
+            }
+        });
+
+        for(int i = 0 ; i < k ; i++){
+            if(small.size() == 0){
+                small.offer(i);
+            }
+            else{
+                if(small.size() != big.size()){
+                    small.offer(i);
+                    big.offer(small.poll());
+                }
+                else{
+                    big.offer(i);
+                    small.offer(big.poll());
+                }
+            }
+        }
+
+        if(k % 2 == 0){
+            res[res_index++] = (double)(((long)nums[small.peek()] + (long)nums[big.peek()]) / 2);
+        }
+        else{
+            res[res_index++] = (double)(nums[small.peek()]);
+        }
+
+        for(int i = k ; i < len ; i++){
+            updateWindows(i , k , small , big , nums);
+            if(k % 2 == 0){
+                res[res_index++] = (double)(((long)nums[small.peek()] + (long)nums[big.peek()]) / 2);
+            }
+            else{
+                res[res_index++] = nums[small.peek()];
+            }
+        }
+        return res;
+    }
+
+    public void updateWindows(int add_i , int k , PriorityQueue<Integer> small , PriorityQueue<Integer> big , int[] nums){
+        if(nums[add_i-k] <= nums[small.peek()]){
+            small.remove(add_i-k);
+        }
+        else{
+            big.remove(add_i-k);
+        }
+        if(small.size() != big.size()){
+            if(small.size() > big.size()){
+                small.offer(add_i);
+                big.offer(small.poll());
+            }
+            else{
+                big.offer(add_i);
+                small.offer(big.poll());
+            }
+        }
+        else{
+            big.offer(add_i);
+            small.offer(big.poll());
+        }
+        return;
+    }
+
+}

@@ -1,0 +1,187 @@
+https://leetcode-cn.com/problems/water-and-jug-problem/solution/tu-de-yan-du-you-xian-bian-li-by-liweiwei1419/
+
+这一类游戏相关的问题，用人脑去想，是很难穷尽所有的可能的情况的。因此很多时候需要用到「搜索算法」。
+
+「搜索算法」一般情况下是在「树」或者「图」结构上的「深度优先遍历」或者「广度优先遍历」。因此，在脑子里，更建议动手在纸上画出问题抽象出来的「树」或者「图」的样子。
+
+在「树」上的「深度优先遍历」就是「回溯算法」，在「图」上的「深度优先遍历」是「flood fill」 算法，深搜比较节约空间。这道题由于就是要找到一个符合题意的状态，我们用广搜就好了。这是因为广搜有个性质，一层一层像水波纹一样扩散，路径最短。
+
+所谓「状态」，就是指当前的任务进行到哪个阶段了，可以用变量来表示，怎么定义状态有的时候需要一定技巧，这道题不难。这里分别定义两个水壶为 A 和 B，定义有序整数对 (a, b) 表示当前 A 和 B 两个水壶的水量，它就是一个状态。
+
+题目说：
+
+你允许：
+
+装满任意一个水壶
+清空任意一个水壶
+从一个水壶向另外一个水壶倒水，直到装满或者倒空
+为了方便说明，我们做如下定义：
+
+装满任意一个水壶，定义为「操作一」，分为：
+（1）装满 A，包括 A 为空和 A 非空的时候把 A 倒满的情况；
+（2）装满 B，包括 B 为空和 B 非空的时候把 B 倒满的情况。
+
+清空任意一个水壶，定义为「操作二」，分为
+（1）清空 A；
+（2）清空 B。
+
+从一个水壶向另外一个水壶倒水，直到装满或者倒空，定义为「操作三」，其实根据描述「装满」或者「倒空」就知道可以分为 4 种情况：
+
+（1）从 A 到 B，使得 B 满，A 还有剩；
+（2）从 A 到 B，此时 A 的水太少，A 倒尽，B 没有满；
+（3）从 B 到 A，使得 A 满，B 还有剩余；
+（4）从 B 到 A，此时 B 的水太少，B 倒尽，A 没有满。
+
+因此，从当前「状态」最多可以进行 8 种操作，得到 8 个新「状态」，对这 8 个新「状态」，依然可以扩展，一直做下去，直到某一个状态满足题目要求。
+
+建议大家在草稿纸上做一个简单的计算，看一下这 8 种操作怎么写，需要注意哪些边界的情况，相信是一个不错的练习。
+
+然后请大家自己尝试写一下代码，广度优先遍历常见的写法有 2 种，由于这里不用求路径最短的长度，在出队的时候不用读取队列的长度。
+
+从当前状态可以扩展出 8 种相邻的状态；
+因为状态有重复，因此是一个「有向」且「有环」的图，在遍历的时候，需要判断该结点设置是否访问过；
+有序整数对 (a, b) 可以自定义成一个私有的类；
+图的遍历，可以使用「深度优先遍历」和「广度优先遍历」，因为状态空间很大，广搜是相对较快；
+尽量「剪枝」，跳过不必要的搜索；
+当然最快的是数学方法。
+
+作者：liweiwei1419
+链接：https://leetcode-cn.com/problems/water-and-jug-problem/solution/tu-de-yan-du-you-xian-bian-li-by-liweiwei1419/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+class Solution {
+
+    public boolean canMeasureWater(int x, int y, int z) {
+
+        if(x + y < z) return false;
+        if(z == 0) return true;
+
+        State init_state = new State(0 , 0);
+
+        Set<State> visited = new HashSet<>();
+        Deque<State> queue = new LinkedList<>();
+
+        queue.add(init_state);
+        visited.add(init_state);
+
+        while(queue.isEmpty() == false){
+
+            State cur_state = queue.poll();
+            int curX = cur_state.getX();
+            int curY = cur_state.getY();
+
+            if(curX == z || curY == z || curX + curY == z) return true;
+
+            List<State> nextState = getNextState(cur_state , x , y);
+            for(State nextState1 : nextState){
+                if(visited.contains(nextState1) == false){
+                    visited.add(nextState1);
+                    queue.add(nextState1);
+                }
+            }
+
+        }
+
+        return false;
+
+    }
+
+    public List<State> getNextState(State s , int x , int y ){
+
+        int curX = s.getX();
+        int curY = s.getY();
+
+        List<State> nextState = new ArrayList<>();
+
+        // 保持B，装满A
+        State newState1 = new State(x , curY);
+        // 保持A，装满B
+        State newState2 = new State(curX , y);
+
+        // 保持B，清空A
+        State newState3 = new State(0 , curY);
+        // 保持A，清空B
+        State newState4 = new State(curX , 0);
+
+        // A往B倒水，B满了，A还有剩
+        State newState5 = new State(curX - (y - curY) , y);
+        // A往B倒水，B没满，A空了
+        State newState6 = new State(0 , curY + curX);
+
+        // B往A倒水，A满了，B还有剩
+        State newState7 = new State(x , curY - (x - curX));
+        // B往A倒水，A没满，B空了
+        State newState8 = new State(curX + curY , 0);
+
+        // 如果A没满，就将A装满
+        if(curX < x){
+            nextState.add(newState1);
+        }
+        if(curY < y){
+            nextState.add(newState2);
+        }
+
+        // 如果水壶有水，就将水壶清空
+        if(curX > 0){
+            nextState.add(newState3);
+        }
+        if(curY > 0){
+            nextState.add(newState4);
+        }
+
+        // A往B倒水，如果加起来的水B满了
+        if(curX + curY >= y){
+            nextState.add(newState5);
+        }
+        else{
+            nextState.add(newState6);
+        }
+
+        // B往A倒水，如果加起来的水A满了
+        if(curX + curY >= x){
+            nextState.add(newState7);
+        }
+        else{
+            nextState.add(newState8);
+        }
+
+        return nextState;
+
+    }
+
+    class State{
+
+        private int x ;
+        private int y;
+
+        public State(int x , int y){
+            this.x = x ;
+            this.y = y ;
+        }
+
+        public int getX(){
+            return this.x;
+        }
+        
+        public int getY(){
+            return this.y;
+        }
+
+        @Override
+        public boolean equals(Object o){
+            if(this == o) return true;
+            if(o == null || this.getClass() != o.getClass()) return false;
+
+            return this.x == ((State)o).getX() && this.y == ((State)o).getY();
+
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(x, y);
+        }
+
+    }
+
+}

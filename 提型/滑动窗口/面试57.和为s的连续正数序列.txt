@@ -1,0 +1,29 @@
+class Solution {
+public:
+    vector<vector<int>> findContinuousSequence(int target) {
+
+        vector<vector<int>> res;
+        vector<int> a;
+        if(target <= 2){
+            return res;
+        }
+        int left = 1 , right = 2 , sum = 3;
+        while(right < target){
+            while(left <= right && sum > target){
+                sum -= left;
+                left++;
+            }
+            if(sum == target){
+                a.clear();
+                for(int i = left ; i <= right ; i++){
+                    a.push_back(i);
+                }
+                res.push_back(a);
+            }
+            right++;
+            sum += right ;
+        }
+        return res;
+
+    }
+};

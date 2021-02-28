@@ -1,0 +1,43 @@
+// 总的判断：从某个点开始，可否到达中间的某个节点，要判断前面总剩余是否充足，如果<0就从这开始就不行
+// 第一：只有当一个点他自己的remain是充足的，才可能被作为起点
+// 第二（贪心策略）：假设一个点a作为起点，remain[a]>0，可以走到b；再在b，a+b>0,可以走到c；
+// 但是此时从c开始走到d，a+b+c<0；
+// 第一反应就是a作为起点不行。
+// 深入分析：
+// 1.a+b>0且a+b+c<0，则c<0，c不能作为起点；
+// 2.a+b+c<0且a>0，则b+c<-a<0，则b也不能作为起点；
+// 综上所述：一个起点能如果走了一段路，但不能到达中间某个节点，那么这一段路上的节点都不可能是起点了
+
+
+class Solution {
+    public int canCompleteCircuit(int[] gas, int[] cost) {
+
+        int len = gas.length;
+        if(len <= 0) return 0;
+
+        int[] remain = new int[len*2];
+        for(int i = 0 ; i < 2 * len ; i++){
+            if(i >= len){
+                remain[i] = remain[i-len];
+            }   
+            else{
+                remain[i] = gas[i] - cost[i];
+            }
+        }
+        int total_remain = 0;
+        for(int i = 0 ; i < len ; i++){
+            if(remain[i] >= 0){
+                total_remain = 0;
+                for(int j = i ; j < i + len ; j++){
+                    total_remain += remain[j];
+                    if(total_remain < 0){
+                        i = j;
+                        break;
+                    }
+                    if(j == i + len - 1) return i;
+                }
+            }
+        }
+        return -1;
+    }
+}

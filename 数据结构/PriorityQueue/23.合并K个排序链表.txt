@@ -1,0 +1,50 @@
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public ListNode mergeKLists(ListNode[] lists) {
+
+        int len = lists.length;
+        if(len <= 0){
+            return null;
+        }        
+
+        Queue<ListNode> heap = new PriorityQueue<>(
+            new Comparator<ListNode>(){
+                @Override
+                public int compare(ListNode o1 , ListNode o2){
+                    return o1.val - o2.val;
+                }
+            }
+        );
+
+        ListNode res = new ListNode(-1);
+        res.next = null;
+        ListNode p = res;
+        ListNode temp ;
+        
+        //有k个链表，就用一个k个节点的堆，每一次找到最小的堆顶放入，如果弹出的堆顶元素有下一个节点，也把他放进堆即可
+        for(int i = 0 ; i < len ; i++){
+            if(lists[i] != null){
+                heap.add(lists[i]);
+            }
+        }
+
+        while(heap.isEmpty() == false){
+            temp = heap.poll();
+            p.next = temp;
+            p = p.next;
+            if(temp.next != null){
+                heap.add(temp.next);
+            }
+        }
+
+        return res.next;
+
+    }
+}

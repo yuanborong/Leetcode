@@ -1,0 +1,24 @@
+class Solution {
+    public boolean isAnagram(String s, String t) {
+
+        int len_s = s.length();
+        int len_t = t.length();
+        if(len_s != len_t){
+            return false;
+        }
+
+        char[] arr_s = s.toCharArray();
+        char[] arr_t = t.toCharArray();
+
+        Arrays.sort(arr_s);
+        Arrays.sort(arr_t);
+
+        for(int i = 0 ; i < len_s ; i++){
+            if(arr_s[i] != arr_t[i]){
+                return false;
+            }
+        }
+
+        return true;
+    }
+}

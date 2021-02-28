@@ -1,0 +1,67 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+
+    private List<TreeNode> p_list ;
+    private List<TreeNode> q_list ;
+    private List<TreeNode> temp;
+
+    public void traceback(TreeNode root , TreeNode p , int k){
+        if(root == null){
+            return;
+        }
+        temp.add(root);
+        if(k == 1 && root.val == p.val){
+            for(TreeNode a:temp){
+                p_list.add(a);
+            }
+            return;
+        }
+        if(k == 2 && root.val == p.val){
+            for(TreeNode a:temp){
+                q_list.add(a);
+            }
+            return;
+        }
+        traceback(root.left , p , k);
+        if(q_list.isEmpty() == false && p_list.isEmpty() == false){
+            return;
+        }
+        traceback(root.right , p , k);
+        temp.remove(temp.size()-1);
+        return;
+    }
+
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        
+        if(root == null){
+            return root;
+        }
+        p_list = new ArrayList<>();
+        q_list = new ArrayList<>();
+        temp = new ArrayList<>();
+
+        traceback(root , p , 1);
+        // System.out.println(p_list.size());
+        temp.clear();
+        traceback(root , q , 2);
+
+        // System.out.println(p_list.size());
+        // System.out.println(q_list.size());
+        int i = 0;
+        while(i < p_list.size() && i < q_list.size()){
+            if(p_list.get(i) != q_list.get(i)){
+                return p_list.get(i-1);
+            }
+            i++;
+        }
+        return q_list.get(i-1);
+    }
+}

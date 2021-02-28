@@ -1,0 +1,28 @@
+class Solution {
+    public boolean isToeplitzMatrix(int[][] matrix) {
+
+        int height = matrix.length ;
+        if(height <= 1) return true ;
+        int width = matrix[0].length ;
+        if(width <= 1) return true ;
+
+        int curNum ;
+        int m , n ;
+        for(int i = height - 2 ; i >= 1 ;  i--){
+            curNum = matrix[i][0] ;
+            for(m = i + 1 , n = 1 ; m < height && n < width ; m++ , n++){
+                if(matrix[m][n] != curNum) return false ;
+            }
+        }
+
+        for(int j = 0 ; j < width ; j++){
+            curNum = matrix[0][j] ;
+            for(m = 1 , n = j + 1 ; m < height && n < width ; m++ , n++){
+                if(matrix[m][n] != curNum) return false  ; 
+            }
+        }
+
+        return true ;
+
+    }
+}

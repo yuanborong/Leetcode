@@ -1,0 +1,37 @@
+class Solution {
+
+    public List<Integer> res ;
+
+    public boolean dfs(int start_index , String s , int pre1 , int pre2 , int len , int No){
+
+        if(start_index >= len) return true;
+        String cur_num_str;
+        long cur_num ;
+
+        for(int end_index = start_index ; end_index < len ; end_index++){
+            // 如果第一个考虑的字符是0，那么就只考虑这个0，不会再由他作开头到后面
+            if(s.charAt(start_index) == '0' && end_index > start_index) break;
+            cur_num_str = s.substring(start_index , end_index + 1);
+            cur_num = Long.parseLong(cur_num_str);
+            if(cur_num > Integer.MAX_VALUE || (No >= 2 && cur_num > (pre1 + pre2))) break;
+            if(No == 0 || No == 1 || (pre1 + pre2 == cur_num)){
+                res.add((int)cur_num);
+                if(dfs(end_index + 1 , s , pre2 , (int)cur_num , len , No + 1)){
+                    if(res.size() >= 3) return true;
+                }
+                res.remove(res.size() - 1);
+            }
+        }
+        return false;
+    }
+
+    public List<Integer> splitIntoFibonacci(String S) {
+
+        int len = S.length();
+        res = new ArrayList<>();
+        if(len <= 2) return res;
+
+        dfs(0 , S , 0 , 0 , len , 0);
+        return res;
+    }
+}

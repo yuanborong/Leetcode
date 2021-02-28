@@ -1,0 +1,23 @@
+class Solution {
+    public int[] maxSlidingWindow(int[] nums, int k) {
+
+        int len = nums.length;
+        if(len < k) return new int[1];
+
+        int[] res = new int[len - k + 1];
+
+        // 创建一个可以操作栈底元素的单调栈，栈底元素是最大值，栈顶元素是最小值
+        LinkedList<Integer> both_queue = new LinkedList<>();
+        int res_index = 0;
+        for(int i = 0 ; i < len ; i++){
+            if(i > k - 1){
+                if(both_queue.getFirst() == (i - k)) both_queue.removeFirst();
+            }
+            while(both_queue.isEmpty() == false && nums[both_queue.getLast()] < nums[i]) both_queue.removeLast();
+            both_queue.add(i);
+            if(i >= k - 1) res[res_index++] = nums[both_queue.getFirst()];
+        }
+        return res;
+
+    }
+}

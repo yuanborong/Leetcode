@@ -1,0 +1,56 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+
+    public List<List<Integer>> levelOrderBottom(TreeNode root) {
+
+        List<List<Integer>> result = new ArrayList<List<Integer>>();
+        if(root == null){
+            return result;
+        }
+        LinkedList<TreeNode> queue_node = new LinkedList<>();
+        LinkedList<Integer> queue_depth = new LinkedList<>();
+        List<Integer> new_list = new ArrayList<>();
+        Stack<List<Integer>> s = new Stack<>();
+        int front_depth = 0 , cur_depth = 1;
+        queue_depth.add(1);
+        queue_node.add(root);
+        TreeNode cur_node ;
+        while(queue_node.isEmpty() == false){
+            cur_node = queue_node.remove();
+            cur_depth = queue_depth.remove();
+            if(front_depth < cur_depth){
+                if(front_depth != 0){
+                    s.push(new_list);
+                }
+                new_list = new ArrayList<>();
+            }
+            new_list.add(cur_node.val);
+            if(cur_node.left != null){
+                queue_node.add(cur_node.left);
+                queue_depth.add(cur_depth + 1);
+            }
+            if(cur_node.right != null){
+                queue_node.add(cur_node.right);
+                queue_depth.add(cur_depth + 1);
+            }
+            front_depth = cur_depth;
+        }
+        s.push(new_list);
+
+        while(s.isEmpty() == false){
+            result.add(s.pop());
+        }
+
+
+        return result;
+
+    }
+}

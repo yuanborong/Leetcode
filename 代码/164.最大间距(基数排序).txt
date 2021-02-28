@@ -1,0 +1,53 @@
+class Solution {
+    public int maximumGap(int[] nums) {
+
+        int len = nums.length;
+        if(len <= 1) return 0;
+        
+        // 基数排序，构建10个桶的桶排序
+        List<List<Integer>> bucket_list = new ArrayList<>(10);
+        // ArrayList的扩容机制：初始化的size是0，知道add第一个元素，就会分配N个元素的空间
+        for(int i = 0 ; i < 10 ; i++){
+            bucket_list.add(new ArrayList<>());
+        }
+        int max_num = Integer.MIN_VALUE;
+        for(int i : nums){
+            if(max_num < i) max_num = i;
+        }
+        // 计算最多有多少位
+        int a = 0;
+        int copy_max_num = max_num;
+        while(copy_max_num != 0){
+            a++;
+            copy_max_num /= 10;
+        }
+
+        // 基数排序，先从个位数进行放桶，然后从小桶到大桶，桶内是从头到尾组成新的数组
+        int beishu = 1 , index , bucket_size;
+        while(a != 0){
+            // 每次都更新全部桶
+            for(int i = 0 ; i < 10 ; i++){
+                bucket_list.set(i , new ArrayList<>());
+            }
+            // 遍历这个数组，不断往桶里面放元素
+            for(int i = 0 ; i < len ; i++){
+                bucket_list.get(nums[i] / beishu % 10).add(nums[i]);
+            }
+            // 从小桶到大桶，桶内从头到尾组成新的数组
+            index = 0;
+            for(int i = 0 ; i < 10 ; i++){
+                bucket_size = bucket_list.get(i).size();
+                for(int j = 0 ; j < bucket_size ; j++){
+                    nums[index++] = bucket_list.get(i).get(j);
+                }
+            }   
+            beishu *= 10;
+            a--;
+        }
+        int res = 0;
+        for(int i = 0 ; i < len - 1 ; i++){
+            if(nums[i+1] - nums[i] > res) res = (nums[i+1] - nums[i]);
+        }
+        return res;
+    }
+}

@@ -1,0 +1,67 @@
+class Solution {
+    public int[] searchRange(int[] nums, int target) {
+
+        int[] res = new int[2];
+        res[0] = -1;
+        res[1] = -1;
+        int len = nums.length;
+        if(len <= 0){
+            return res;
+        }
+        int left , right , mid , target_index = -1;
+        left = 0;
+        right = len - 1;
+        while(left <= right){
+            mid = (left + right) / 2;
+            if(nums[mid] == target){
+                target_index = mid;
+                break;
+            }
+            if(nums[mid] > target){
+                right = mid - 1;
+            }
+            else{
+                left = mid + 1;
+            }
+        }
+
+        if(target_index == -1){
+            return res;
+        }
+
+        // 寻找最开始的位置
+        left = 0 ;
+        right = target_index ;
+        while(left <= right){
+            mid = (left + right) / 2;
+            if(nums[mid] == target){
+                if(mid == 0 || nums[mid-1] != target ){
+                    res[0] = mid;
+                    break;
+                }
+                right = mid - 1;
+            }
+            else{
+                left = mid + 1;
+            }
+        }
+
+        // 寻找最后面的位置
+        left = target_index ;
+        right = len - 1;
+        while(left <= right){
+            mid = (left + right) / 2 ;
+            if(nums[mid] == target){
+                if(mid == len - 1 || nums[mid+1] != target){
+                    res[1] = mid;
+                    break;
+                }
+                left = mid + 1;
+            }
+            else{
+                right = mid - 1;
+            }
+        }
+        return res;
+    }
+}

@@ -1,0 +1,32 @@
+class Solution {
+    public String removeKdigits(String num, int k) {
+
+        int cur_k = 0;
+        char[] arr_num = num.toCharArray();
+        int len = arr_num.length;
+        if(len <= 0) return "";
+        StringBuffer sb = new StringBuffer();
+
+        LinkedList<Character> list = new LinkedList<>();
+        for(int i = 0 ; i < len ; i++){
+            if(list.isEmpty() || cur_k == k) list.addLast(arr_num[i]);
+            else{
+                while(!list.isEmpty() && cur_k < k && list.getLast() > arr_num[i]){
+                    list.removeLast();
+                    cur_k++;
+                }
+                list.addLast(arr_num[i]);
+            }
+        }
+        while(cur_k < k){
+            list.removeLast();
+            cur_k++;
+        }
+        while(!list.isEmpty() && list.getFirst() == '0') list.removeFirst();
+        while(!list.isEmpty()){
+            sb.append(list.removeFirst());
+        }
+        return (sb.length() == 0)?"0":sb.toString();
+
+    }
+}

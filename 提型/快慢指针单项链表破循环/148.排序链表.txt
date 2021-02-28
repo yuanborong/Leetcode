@@ -1,0 +1,61 @@
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode sortList(ListNode head) {
+
+        return mergeSort(head);
+
+    }
+
+    public ListNode mergeSort(ListNode head){
+
+        if(head == null || head.next == null) return head;
+        // cut the linkedlist to two part , find the middle dot
+        // use fast-slow pointer to find linkedlist's middle dot
+        ListNode fast = head ;
+        ListNode slow = head ;
+        while(fast.next != null && fast.next.next != null){
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        // firstly sort the second part
+        ListNode r = mergeSort(slow.next);
+        slow.next = null;
+        ListNode l = mergeSort(head);
+        ListNode res = mergeList(l , r);
+        return res;
+
+    }
+
+    public ListNode mergeList(ListNode l , ListNode r){
+
+        if(l == null || r == null){
+            return (l == null)?r:l;
+        }
+        ListNode res = new ListNode(-1);
+        ListNode p = res;
+        while(l != null && r != null){
+            if(l.val < r.val){
+                p.next = l;
+                l = l.next;
+            }
+            else{
+                p.next = r;
+                r = r.next;
+            }
+            p = p.next;
+            p.next = null;
+        }
+        p.next = (l == null)?r:l;
+        return res.next;
+    }
+
+}

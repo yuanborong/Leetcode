@@ -1,0 +1,40 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public int countNodes(TreeNode root) {
+
+        if(root == null){
+            return 0;
+        }
+        int left_depth = countDepth(root.left);
+        int right_depth = countDepth(root.right);
+        //如果一个树的左子树和右子树一样的深度，那么左子树就是高度为left_depth的满二叉树
+        //此时直接计算满二叉树和递归右子树就行，再加上根节点+1
+        if(left_depth == right_depth){
+            return (1 << left_depth) - 1 + countNodes(root.right) + 1;
+        }
+        //如果一个树的左右子树深度不一样，那么右子树为满二叉树，再加上左子树
+        else{
+            return (1 << right_depth) - 1 + countNodes(root.left) + 1;
+        }
+
+    }
+
+    public int countDepth(TreeNode root){
+        int depth = 0 ;
+        while(root != null){
+            depth++;
+            root = root.left;
+        }
+        return depth;
+    }
+}
+
+https://mp.weixin.qq.com/s?__biz=MzI2NjI5MzU2Nw==&mid=2247484077&idx=1&sn=907c7cb13bc9b7994f0bf43921b6b1f6&chksm=ea911afddde693ebf618f6be32b884a5385eb1853d26f92033cba2fa5ea8a1da7d599dbf2e54&scene=21#wechat_redirect

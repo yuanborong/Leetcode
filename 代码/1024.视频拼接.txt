@@ -1,0 +1,47 @@
+class Solution {
+    public int videoStitching(int[][] clips, int T) {
+
+        int len = clips.length;
+        if(len <= 0 ) return -1;
+        int cur_combine_start = -1 ;
+        int cur_combine_end = -1;
+        int pre_combine_end = -1;
+
+        Arrays.sort(clips , new Comparator<int[]>(){
+            @Override
+            public int compare(int[] a , int[] b){
+                int len_a = a[1] - a[0];
+                int len_b = b[1] - b[0];
+                if(a[0] == b[0]){
+                    return b[1] - a[1];
+                }
+                return a[0] - b[0];
+            }
+        });
+
+        Stack<int[]> s = new Stack<>();
+        s.add(clips[0]);
+        if(clips[0][0] != 0) return -1;
+        for(int i = 1 ; i < len ; i++){
+            // System.out.print(i);
+            if(s.peek()[1] >= T) break;
+            if(clips[i][0] > s.peek()[1]){
+                return -1;
+            }
+            if(clips[i][0] == s.peek()[0]) continue;
+            int[] peek_temp = s.pop();
+            // 看看是否是（替换栈顶元素）
+            if(s.isEmpty() == false && clips[i][0] <= s.peek()[1] && clips[i][1] > peek_temp[1]){
+                s.add(clips[i]);
+            }
+            else if(clips[i][0] <= peek_temp[1] && clips[i][1] > peek_temp[1]){
+                s.add(peek_temp);
+                s.add(clips[i]);
+            }
+            else{
+                s.add(peek_temp);
+            }
+        }
+        return (s.peek()[1] >= T)?s.size():-1;
+    }
+}

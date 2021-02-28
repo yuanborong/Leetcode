@@ -1,0 +1,53 @@
+class Solution {
+    public int[] topKFrequent(int[] nums, int k) {
+
+        int len = nums.length;
+        int[] result = new int[k];
+        if(len == 0 || k > len){
+            return result;
+        }
+
+        // 使用桶排序（也就是hashset保存出现次数）
+        HashMap<Integer , Integer> hm = new HashMap<>();
+        for(int i = 0 ; i < len ; i++){
+            if(hm.containsKey(nums[i]) == true){
+                int temp = hm.get(nums[i]);
+                hm.remove(nums[i]);
+                hm.put(nums[i] , temp + 1);
+            }
+            else{
+                hm.put(nums[i] , 1);
+            }
+        }
+
+        // 要使得时间复杂度降下来，不可以单纯全部数据进行排序
+        // 解决topK方法：就可以是最大堆取前面得即可了，不用全部排序
+        // 用到了最大堆：PriorityQueue，默认是升序，最小堆，修改比较器
+        PriorityQueue<Integer> heap = new PriorityQueue<>(new Comparator<Integer>(){
+            @Override
+            public int compare(Integer a , Integer b){
+                return hm.get(a) - hm.get(b);
+            }
+        }
+        );
+
+        for(Integer key:hm.keySet()){
+            if(heap.size() < k){
+                heap.add(key);
+            }
+            else{
+                if(hm.get(heap.peek()) < hm.get(key)){
+                    heap.remove();
+                    heap.add(key);
+                }
+            }
+        }
+
+        for(int i = 0 ; i < k ; i++){
+            result[i] = heap.remove();
+        }
+
+        return result;
+
+    }
+}

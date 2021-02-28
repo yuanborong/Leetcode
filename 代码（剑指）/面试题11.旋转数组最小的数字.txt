@@ -1,0 +1,42 @@
+class Solution {
+    public int minArray(int[] numbers) {
+
+        int len = numbers.length;
+        if(len <= 0){
+            return 0;
+        }
+        if(len == 1){
+            return numbers[0];
+        }
+
+        int start = 0;
+        int left = 0 , right = len - 1;
+        int mid;
+        while(left < right){
+            while(left < right && numbers[left] == numbers[left+1]){
+                left++;
+            }
+            while(left < right && numbers[right] == numbers[right-1]){
+                right--;
+            }
+            if(left >= right){
+                break;
+            }
+            mid = (left + right) / 2 ;
+            if(numbers[mid] > numbers[mid+1]){
+                start = mid + 1;
+                break;
+            }
+            if(numbers[mid] < numbers[len-1]){
+                right = mid;
+            }
+            else{
+                left = mid + 1;
+            }
+        }
+
+        return numbers[start];
+
+
+    }
+}

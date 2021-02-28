@@ -1,0 +1,70 @@
+class Solution {
+
+    public int[] location ;
+    public boolean[] col_used;
+    public List<List<String>> res;
+
+    public void printQueue(int n){
+        List<String> new_res = new ArrayList<>();
+        String temp = "";
+        for(int i = 0 ; i < n ; i++){
+            temp += ".";
+        }
+        for(int i = 0 ; i < n ; i++){
+            StringBuffer sb = new StringBuffer(temp);
+            sb.replace(location[i] , location[i]+1 , "Q");
+            new_res.add(sb.toString());
+        }
+        res.add(new_res);
+        return;
+    }
+
+    public double xielv(int i1 , int j1 , int i2 , int j2){
+        double res1 = ((double)(i1 - i2)) / ((double)(j1 - j2));
+        return res1;
+    }
+
+    public boolean checkLocation(int n){
+        boolean res1 = true;
+        for(int i = 0 ; i < n ; i++){
+            for(int j = i + 1 ; j < n ; j++){
+                if(xielv(i , location[i] , j , location[j]) == 1 || xielv(i , location[i] , j , location[j]) == -1){
+                    res1 = false;
+                    break;
+                }
+            }
+        }
+        return res1;
+    }
+
+    public void traceback(int row , int count_queue , int n){
+        if(count_queue == n){
+            if(checkLocation(n) == true){
+                printQueue(n);
+            }
+            return;
+        }
+        for(int j = 0 ; j < n ; j++){
+            if(col_used[j] == false){
+                location[row] = j;
+                col_used[j] = true;
+                traceback(row+1 , count_queue+1 , n);
+                location[row] = -1;
+                col_used[j] = false;
+            }
+        }
+        return;
+    }
+
+    public List<List<String>> solveNQueens(int n) {
+
+        location = new int[n];
+        col_used = new boolean[n];
+        res = new ArrayList<>();
+        for(int i = 0 ; i < n ; i++){
+            location[i] = -1;
+        }
+        traceback(0 , 0 ,n);
+        return res;
+    }
+}

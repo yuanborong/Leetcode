@@ -1,0 +1,31 @@
+class Solution {
+    public boolean wordPattern(String pattern, String s) {
+
+        String[] str_arr = s.split(" ");
+        int len = pattern.length();
+        int len1 = str_arr.length;
+        if(len != len1) return false;
+
+        Map<Character , Integer> map_p = new HashMap<>();
+        Map<String , Integer> map_s = new HashMap<>();
+        char p_ch ;
+        String s_str;
+        int index_p , index_s;
+        for(int i = 0 ; i < len ; i++){
+            p_ch = pattern.charAt(i);
+            s_str = str_arr[i];
+            if(!map_p.containsKey(p_ch) && map_s.containsKey(s_str)) return false;
+            if(map_p.containsKey(p_ch) && !map_s.containsKey(s_str)) return false;
+            if(!map_p.containsKey(p_ch) && !map_s.containsKey(s_str)){
+                map_p.put(p_ch , i);
+                map_s.put(s_str , i);
+                continue;
+            }
+            index_p = map_p.get(p_ch);
+            index_s = map_s.get(s_str);
+            if(index_p != index_s) return false;
+        }
+        return true;
+
+    }
+}

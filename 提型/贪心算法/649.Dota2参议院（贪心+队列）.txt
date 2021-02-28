@@ -1,0 +1,44 @@
+// 一是贪心：每个在做决定的议员都优先把敌方最早作决定的议员给ban出去
+// 二是队列：首先队列是有序的，两个队列记录两方的决定时间，他们两方之间决定的相对顺序也能得知
+// 同时，因为有可能要经过几轮才可以判断好，那么投过票的就再排一次队伍，再排队他的投票顺序自然就往后了
+class Solution {
+    public String predictPartyVictory(String senate) {
+
+        int len = senate.length();
+        if(len == 1){
+            return (senate.charAt(0) == 'R')?"Radiant":"Dire";
+        }
+        LinkedList<Integer> queue_R = new LinkedList<>();
+        LinkedList<Integer> queue_D = new LinkedList<>();
+        char ch ;
+        for(int i = 0 ; i < len ; i++){
+            ch = senate.charAt(i);
+            if(ch == 'R'){
+                queue_R.add(i);
+            }
+            else{
+                queue_D.add(i);
+            }
+        }
+        int temp_R , temp_D ;
+        while(queue_R.size() != 0 && queue_D.size() != 0){
+            temp_R = queue_R.getFirst();
+            temp_D = queue_D.getFirst();
+            // 此时R方议员先进行操作
+            if(temp_R < temp_D){
+                queue_D.removeFirst();
+                queue_R.removeFirst();
+                queue_R.addLast(temp_R + len);
+            }
+            // 此时D方议员先进行操作
+            else{
+                queue_R.removeFirst();
+                queue_D.removeFirst();
+                queue_D.addLast(temp_D + len);
+            }
+        }
+
+        return (queue_D.isEmpty())?"Radiant":"Dire";
+
+    }
+}

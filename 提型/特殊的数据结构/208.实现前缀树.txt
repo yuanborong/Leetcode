@@ -1,0 +1,76 @@
+class Trie {
+    const static int R = 26;
+
+    struct Node{
+
+        Node *next_character[26];
+        bool is_end;
+
+        void initial(){
+            is_end = false;
+        }
+
+    };
+
+private:
+    Node *root ;
+
+public:
+    /** Initialize your data structure here. */
+    Trie() {
+        root = new Node();
+        root->initial();
+    }
+    
+    /** Inserts a word into the trie. */
+    void insert(string word) {
+        Node* p = root;
+        for(int i = 0 ; i < word.size() ; i++){
+            if(p->next_character[word[i]-'a'] == NULL){
+                Node *new_node = new Node();
+                new_node->initial();
+                p->next_character[word[i]-'a'] = new_node;
+            }
+            p = p->next_character[word[i]-'a'];
+        }
+        p->is_end = true;
+    }
+    
+    /** Returns if the word is in the trie. */
+    bool search(string word) {
+        Node *p = root;
+        int index = 0;
+        while(p && index < word.size()){
+            p = p->next_character[word[index]-'a'];
+            index++;
+        }
+        if(p == NULL){
+            return false;
+        }
+        return p->is_end;
+
+    }
+    
+    /** Returns if there is any word in the trie that starts with the given prefix. */
+    bool startsWith(string prefix) {
+        Node *p = root;
+        int index = 0;
+        while(p && index < prefix.size()){
+            p = p->next_character[prefix[index]-'a'];
+            index++;
+        }
+        if(index == prefix.size() && p != NULL){
+            return true;
+        }
+        return false;
+
+    }
+};
+
+/**
+ * Your Trie object will be instantiated and called as such:
+ * Trie* obj = new Trie();
+ * obj->insert(word);
+ * bool param_2 = obj->search(word);
+ * bool param_3 = obj->startsWith(prefix);
+ */

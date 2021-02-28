@@ -1,0 +1,45 @@
+class Solution {
+
+    public int result ;
+    public boolean[][] flag;
+
+    public int getHe(int m , int n){
+        int res = 0;
+        while(m > 0){
+            res += (m % 10);
+            m /= 10;
+        }
+        while(n > 0){
+            res += (n % 10);
+            n /= 10;
+        }
+        return res;
+    }
+
+    public void dfs(int i , int j , int m , int n , int k){
+
+        if(i < 0 || i >= m || j < 0 || j >= n || flag[i][j] == true || getHe(i , j) > k){
+            return;
+        }
+        flag[i][j] = true;
+        result++;
+        dfs(i+1 , j , m , n , k);
+        dfs(i-1 , j , m , n , k);
+        dfs(i , j-1 , m , n , k);
+        dfs(i , j+1 , m , n , k);
+        return ;
+
+    }
+
+    public int movingCount(int m, int n, int k) {
+
+        if(m < 0 || n < 0 || k < 0){
+            return 0;
+        }
+        flag = new boolean[m][n];
+        result = 0;
+        dfs(0 , 0 , m , n , k);
+        return result;
+
+    }
+}

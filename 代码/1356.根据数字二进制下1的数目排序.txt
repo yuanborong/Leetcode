@@ -1,0 +1,41 @@
+class Solution {
+    public int[] sortByBits(int[] arr) {
+
+        int len = arr.length;
+        if(len <= 0) return new int[1];
+
+        IntStream stream = Arrays.stream(arr);
+        Stream<Integer> integerStream = stream.boxed();
+        Integer[] integers = integerStream.toArray(Integer[]::new);
+
+        Map<Integer , Integer> count_one = new HashMap<>();
+        int temp , temp_count;
+        for(int i = 0 ; i < len ; i++){
+            temp = arr[i];
+            temp_count = 0;
+            while(temp != 0){
+                if((temp & 1) == 1){
+                    temp_count++;
+                }
+                temp /= 2;
+            }
+            count_one.put(arr[i] , temp_count);
+        }
+
+        Arrays.sort(integers , new Comparator<Integer>(){
+            @Override
+            public int compare(Integer a , Integer b){
+                int one_a = count_one.get(a);
+                int one_b = count_one.get(b);
+                if(one_a == one_b){
+                    return a - b;
+                }
+                return one_a - one_b;
+            }
+        });
+
+        int[] res = Arrays.stream(integers).mapToInt(Integer::valueOf).toArray();
+
+        return res;
+    }
+}

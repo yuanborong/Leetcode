@@ -1,0 +1,29 @@
+class Solution {
+    public String removeDuplicateLetters(String s) {
+
+        int len = s.length();
+        if(len <= 0){
+            return "";
+        }
+        Stack<Character> stack = new Stack<>();
+        char cur_ch;
+        for(int i = 0 ; i < len ; i++){
+            cur_ch = s.charAt(i);
+            if(stack.isEmpty() == false && stack.contains(cur_ch) == true){
+                continue;
+            }
+            while(stack.isEmpty() == false && stack.peek() > cur_ch && s.indexOf(stack.peek() , i) != -1){
+                stack.pop();
+            }
+            stack.push(cur_ch);
+        }
+
+        String res = "";
+        while(stack.isEmpty() == false){
+            res = stack.pop() + res;
+        }
+        return res;
+
+
+    }
+}

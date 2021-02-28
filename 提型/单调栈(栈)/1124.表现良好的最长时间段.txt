@@ -1,0 +1,37 @@
+// 前缀和：得知两个位置的前缀和，就可以计算出这两个位置之间的和！
+// 单调栈：当你想找到比某个位置上的数大或小的数（出现在序列前方）的时候，那么就可以用单调栈进行保存
+
+class Solution {
+    public int longestWPI(int[] hours) {
+
+        int len = hours.length;
+        if(len <= 0){
+            return 0;
+        }
+        int[] pre_sum = new int[len+1];
+        Stack<Integer> s = new Stack<>();
+        int res = 0 ;
+        s.add(0);
+        for(int i = 1 ; i < len + 1 ; i++){
+            if(hours[i-1] > 8)  hours[i-1] = 1;
+            else hours[i-1] = -1;
+            if(i == 1){
+                pre_sum[i] = hours[i-1];
+            }
+            else{
+                pre_sum[i] = (pre_sum[i-1] + hours[i-1]);
+            }
+            if(pre_sum[i] <= pre_sum[s.peek()]) s.add(i);
+        }
+        for(int i = len ; i >= 0 && s.isEmpty() == false; i--){
+            if(i <= s.peek()) s.pop();
+            if(s.isEmpty() == true || pre_sum[i] <= pre_sum[s.peek()]) continue;
+            while(s.isEmpty() == false && pre_sum[s.peek()] < pre_sum[i]){
+                if(res < (i - s.peek())) res = (i - s.peek());
+                s.pop();
+            }
+        }
+
+        return res;
+    }
+}

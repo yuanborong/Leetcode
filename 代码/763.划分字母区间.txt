@@ -1,0 +1,38 @@
+class Solution {
+    public List<Integer> partitionLabels(String S) {
+
+        int len = S.length();
+        char[] arr_s = S.toCharArray();
+        List<Integer> res = new ArrayList<>();
+        if(len <= 0){
+            return res;
+        }
+
+        // 第一遍遍历：记录每个字母所出现再字符串的最末的索引号
+        int[] back_index = new int[26];
+        for(int i = 0 ; i < 26 ; i++) back_index[i] = -1;
+        for(int i = 0 ; i < len ; i++){
+            if(back_index[arr_s[i]-'a'] < i) back_index[arr_s[i]-'a'] = i;
+        }
+
+        // 第二遍遍历：多次划分，每次划分中，开始的字母是确定的，那要找本个片段的结束字母在哪？
+        // 原则是在开始字母确定的情况下，结束字母越靠前越好
+        // 那么可以这样：初始化这个片段是[i_start , back_index[i_start]]，初始化结束下标在开始字母的最末索引号下
+        // 这样初始化的结束下标就是最好的情况，然而这样粗略划分可不一定符合题意哦，
+        // 有可能本片段中间字母和后面未被划分的字母相同，那么就该是遍历初始化这个片段中的所有字母，找到满足条件的那个最末下标。就是能确定这个片段啦
+        int sum = 0;
+        int cur_start = 0;
+        int cur_end;
+        while(sum != len){
+            cur_end = back_index[arr_s[cur_start]-'a'];
+            for(int i = cur_start + 1; i < cur_end ; i++){
+                if(back_index[arr_s[i]-'a'] > cur_end) cur_end = back_index[arr_s[i]-'a'];
+            }
+            res.add(cur_end - cur_start + 1);
+            sum += (cur_end - cur_start + 1);
+            cur_start = cur_end + 1;
+        }
+        return res;
+
+    }
+}

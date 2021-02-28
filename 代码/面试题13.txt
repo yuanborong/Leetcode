@@ -1,0 +1,55 @@
+class Solution {
+
+    private int[][] count;
+    private boolean[][] flag;
+    private int res;
+
+    private int getResult(int i , int j){
+        int res = 0;
+        while(i > 0){
+            res += (i % 10);
+            i /= 10;
+        }
+        while(j > 0){
+            res += (j % 10);
+            j /= 10;
+        }
+        return res;
+    }
+
+    private void ini_count(int m , int n ,int k){
+        count = new int[m][n];
+        flag = new boolean[m][n];
+        res = 0;
+        for(int i = 0 ; i < m ; i++){
+            for(int j = 0 ; j < n ; j++){
+                count[i][j] = getResult(i , j);
+                flag[i][j] = false;
+            }
+        }
+        return ;
+    }
+
+    private void dfs(int i , int j , int m , int n , int k){
+        if( i < 0 || i >= m || j < 0 || j >= n || count[i][j] > k || flag[i][j] == true){
+            return ;
+        }
+        res++;
+        flag[i][j] = true;
+        dfs(i-1 , j , m , n , k);
+        dfs(i , j-1 , m , n , k);
+        dfs(i+1 , j , m , n , k);
+        dfs(i , j+1 , m , n , k);
+        return ;
+    }
+
+    public int movingCount(int m, int n, int k) {
+
+        if(m == 0 || n == 0 || k < 0){
+            return 0;
+        }
+        ini_count(m , n , k);
+        dfs(0 , 0 , m , n , k);
+        return res;
+    }
+}

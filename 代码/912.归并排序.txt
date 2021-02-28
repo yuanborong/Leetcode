@@ -1,0 +1,46 @@
+class Solution {
+
+    public void combine(int[] nums , int left , int right){
+        if(left >= right){
+            return ;
+        }
+        int mid = (left + right) / 2;
+        combine(nums , left , mid);
+        combine(nums , mid + 1 , right);
+
+        List<Integer> t_nums = new ArrayList<>();
+        int i = left , j = mid + 1 , index;
+        while(i <= mid && j <= right){
+            if(nums[i] <= nums[j]){
+                t_nums.add(nums[i++]);
+            }
+            else{
+                t_nums.add(nums[j++]);
+            }
+        }
+        while(i <= mid){
+            t_nums.add(nums[i++]);
+        }
+        while(j <= right){
+            t_nums.add(nums[j++]);
+        }
+
+        for(index = left , i = 0; index <= right ; index++ , i++){
+            nums[index] = t_nums.get(i);
+        }
+        return ;
+
+    }
+
+    public int[] sortArray(int[] nums) {
+        
+        int len = nums.length;
+        if(len <= 1){
+            return nums;
+        }
+        combine(nums , 0 , len - 1);
+
+        return nums;
+
+    }
+}

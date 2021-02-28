@@ -1,0 +1,47 @@
+class Solution {
+public:
+
+    struct node{
+        int val;
+        node *pre;
+        node *next;
+    };
+
+    int lastRemaining(int n, int m) {
+
+        if(n <0 || m < 0){
+            return 0;
+        }
+
+        vector<node> v_node(n);
+        v_node[0].val = 0;
+
+        for(int i = 1 ; i < n ;i ++){
+            v_node[i].val = i;
+            v_node[i].pre = &v_node[i-1];
+            v_node[i-1].next = &v_node[i];
+        }
+        v_node[0].pre = &v_node[n-1];
+        v_node[n-1].next = &v_node[0];
+
+        int rest = n , count;
+        node *p = &v_node[0];
+        while(rest > 1){
+            count = 1;
+            while(count < m){
+                count++;
+                // cout << p->val << endl;
+                p = p->next;
+            }
+            p->pre->next = p->next;
+            p->next->pre = p->pre;
+            p = p->next;
+            rest--;
+        }
+        return p->val;
+
+    }
+};
+
+
+//为了删除方便，选择双向链表，单向链表删除的时候还需要两个指针，很麻烦。

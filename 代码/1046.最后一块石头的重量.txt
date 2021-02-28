@@ -1,0 +1,25 @@
+class Solution {
+    public int lastStoneWeight(int[] stones) {
+        
+        int len = stones.length;
+        if(len <= 0) return 0;
+
+        PriorityQueue<Integer> heap = new PriorityQueue<>((a , b) -> {
+            return b - a ;
+        });
+
+        for(int i : stones){
+            heap.add(i);
+        }
+        int a , b;
+        while(heap.size() >= 2){
+            a = heap.remove();
+            b = heap.remove();
+            if(a > b ) heap.add(a - b);
+        }
+
+        if(heap.size() == 0) return 0;
+        return heap.remove();
+
+    }
+}

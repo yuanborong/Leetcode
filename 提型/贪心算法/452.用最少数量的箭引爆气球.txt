@@ -1,0 +1,37 @@
+// 贪心解决区间问题
+// 求最大交集问题，尽可能把所有相交的集合弄在一块
+
+class Solution {
+    public int findMinArrowShots(int[][] points) {
+
+        int len = points.length;
+        if(len <= 0 ) return 0;
+
+        Arrays.sort(points , (p1 , p2) -> {
+            if(p1[0] == p2[0]){
+                long res = (long)(p1[1]) - (long)(p2[1]);
+                return (int)res;
+            }
+            return (int)((long)p1[0] - (long)p2[0]);
+        }) ;
+
+        int res = 1;
+        int[] intersection = new int[2];
+        intersection = points[0];
+        for(int i = 1 ; i < len ; i++){
+            // no intersection
+            if(points[i][0] - intersection[1] > 0){
+                res++;
+                intersection[0] = points[i][0];
+                intersection[1] = points[i][1];
+            }
+            else{
+                intersection[0] = (intersection[0] > points[i][0])?intersection[0]:points[i][0];
+                intersection[1] = (intersection[1] > points[i][1])?points[i][1]:intersection[1];
+            }
+        }
+
+        return res;
+
+    }
+}

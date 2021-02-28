@@ -1,0 +1,55 @@
+class MyStack {
+
+    private int top_number;
+    private Queue<Integer> q;
+
+    /** Initialize your data structure here. */
+    public MyStack() {
+        this.top_number = -1;
+        this.q = new LinkedList<>();
+    }
+    
+    /** Push element x onto stack. */
+    public void push(int x) {
+        this.q.add(x);
+        this.top_number = x;
+    }
+    
+    /** Removes the element on top of the stack and returns that element. */
+    public int pop() {
+        Queue<Integer> temp_q = new LinkedList<>();
+        int temp;
+        if(this.q.isEmpty()){
+            return -1;
+        }
+        while(this.q.size() != 1){
+            temp = q.remove();
+            temp_q.add(temp);
+        }
+        temp = q.remove();
+        while(temp_q.size() != 0){
+            this.top_number = temp_q.remove();
+            this.q.add(this.top_number);
+        }
+        return temp;
+    }
+    
+    /** Get the top element. */
+    public int top() {
+        return this.top_number;
+    }
+    
+    /** Returns whether the stack is empty. */
+    public boolean empty() {
+        return q.isEmpty();
+    }
+}
+
+/**
+ * Your MyStack object will be instantiated and called as such:
+ * MyStack obj = new MyStack();
+ * obj.push(x);
+ * int param_2 = obj.pop();
+ * int param_3 = obj.top();
+ * boolean param_4 = obj.empty();
+ */

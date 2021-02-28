@@ -1,0 +1,50 @@
+class Solution {
+    public List<Integer> findAnagrams(String s, String p) {
+
+        List<Integer> res = new ArrayList<>();
+        int len_s = s.length();
+        int len_p = p.length();
+        char[] arr_s = s.toCharArray();
+        char[] arr_p = p.toCharArray();
+        if(len_p == 0 || len_s == 0 || len_s < len_p){
+            return res;
+        }
+        HashMap<Character , Integer> map_p = new HashMap<>();
+        int[] count_window_p = new int[26];
+        int match_count = 0;
+        for(char ch : arr_p){
+            if(map_p.containsKey(ch) == true){
+                map_p.put(ch , map_p.get(ch)+1);
+            }
+            else{
+                map_p.put(ch , 1);
+            }
+        }
+        int left = 0 , right = 0;
+        int p_set_len = map_p.keySet().size();
+        while((right - left) < len_p){
+            count_window_p[arr_s[right]-'a']++;
+            if(map_p.containsKey(arr_s[right]) == true && count_window_p[arr_s[right]-'a'] == map_p.get(arr_s[right])){
+                match_count++;
+                if(match_count == p_set_len){
+                    res.add(left);
+                }
+            }
+            right++;
+        }
+        while(right < len_s){
+            count_window_p[arr_s[left]-'a']--;
+            if(map_p.containsKey(arr_s[left]) == true && count_window_p[arr_s[left]-'a'] == map_p.get(arr_s[left])-1) match_count--;
+            count_window_p[arr_s[right]-'a']++;
+            if(map_p.containsKey(arr_s[right]) == true && count_window_p[arr_s[right]-'a'] == map_p.get(arr_s[right])){
+                match_count++;
+                if(match_count == p_set_len){
+                    res.add(left+1);
+                }
+            }
+            left++;
+            right++;
+        }
+        return res;
+    }
+}

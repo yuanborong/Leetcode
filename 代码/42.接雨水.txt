@@ -1,0 +1,31 @@
+class Solution {
+    public int trap(int[] height) {
+
+        int len = height.length;
+        if(len <= 2){
+            return 0;
+        }
+        int res = 0;
+        //构建单调栈
+        //理解：从头到尾遍历，目的是找到一个能和前面栈中栈顶元素（也就是栈中最小元素）能够构成接雨水的柱
+        //定位了这两个柱，如何计算：它两能接住多少水，取决于左边柱的左边的邻居柱高还是右边柱高
+        //取最低的那个柱，它和左边柱的高度差就是雨水的高度，再乘上左边柱和右边柱的距离，就是两个柱产生的雨水
+        Stack<Integer> s = new Stack<>();
+        for(int i = 0 ; i < len ; i++){
+            while(s.isEmpty() == false && height[s.peek()] < height[i]){
+                int cur_peek_index = s.pop();
+                // 确定了这个栈顶元素是可以产生雨水，但是看看栈里面有没有与栈顶相等的元素，要找最左的
+                while(s.isEmpty() == false && height[s.peek()] == height[cur_peek_index]){
+                    cur_peek_index = s.pop();
+                }
+                if(s.isEmpty() == false){
+                    int left_neighbor = s.peek();
+                    int min_height = (height[left_neighbor] > height[i])?height[i]:height[left_neighbor];
+                    res += (min_height - height[cur_peek_index]) * (i - left_neighbor - 1 );
+                }
+            }
+            s.push(i);
+        }
+        return res;
+    }
+}

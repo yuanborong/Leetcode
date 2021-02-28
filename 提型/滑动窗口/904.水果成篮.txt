@@ -1,0 +1,37 @@
+class Solution {
+    public int totalFruit(int[] tree) {
+
+        int len = tree.length;
+        if(len <= 0){
+            return 0;
+        }
+        int res = 0;
+        int left = 0 ; 
+        int right = 0;
+        int greater_one = 0;
+        HashMap<Integer , Integer> count_tree = new HashMap<>();
+        while(right < len){
+            if(count_tree.containsKey(tree[right]) == false || count_tree.get(tree[right]) == 0){
+                count_tree.put(tree[right] , 1);
+                greater_one++;
+                if(greater_one > 2){
+                    if(right - left > res) res = (right - left);
+                    while(left < right){
+                        count_tree.put(tree[left] , count_tree.get(tree[left]) - 1);
+                        left++;
+                        if(count_tree.get(tree[left-1]) == 0){
+                            greater_one--;
+                            break;
+                        }
+                    }
+                }
+            }
+            else{
+                count_tree.put(tree[right] , count_tree.get(tree[right]) + 1);
+            }
+            right++;
+        }
+        if(right - left > res) res = (right - left);
+        return res;
+    }
+}

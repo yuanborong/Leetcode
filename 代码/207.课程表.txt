@@ -1,0 +1,42 @@
+class Solution {
+    public boolean canFinish(int numCourses, int[][] prerequisites) {
+
+        int len = prerequisites.length;
+        if(len == 0){
+            return true;
+        }
+
+        HashMap<Integer , List<Integer>> graph = new HashMap<>();
+        int[] indegree = new int[numCourses];
+        LinkedList<Integer> zero_indegree = new LinkedList<>();
+        HashSet<Integer> top_sort = new HashSet<>();
+        List<Integer> temp;
+        int cur_course;
+        for(int i = 0 ; i < numCourses ; i++){
+            graph.put(i , new ArrayList<>());
+            indegree[i] = 0;
+        }
+        for(int i = 0 ; i < len ; i++){
+            graph.get(prerequisites[i][1]).add(prerequisites[i][0]);
+            indegree[prerequisites[i][0]]++;
+        }
+        for(int i = 0 ; i < numCourses ; i++){
+            if(indegree[i] == 0){
+                zero_indegree.add(i);
+            }
+        }
+
+        while(zero_indegree.isEmpty() == false){
+            cur_course = zero_indegree.remove();
+            top_sort.add(cur_course);
+            temp = graph.get(cur_course);
+            for(int i = 0 ; i < temp.size() ; i++){
+                if((--indegree[temp.get(i)]) == 0){
+                    zero_indegree.add(temp.get(i));
+                }
+            }
+        }
+
+        return (top_sort.size() == numCourses);
+    }
+}

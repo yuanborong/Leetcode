@@ -1,0 +1,34 @@
+// 链表要对倒数第n个操作，那么就设定双指针法
+// 好比如要对导数第5个操作，那么如何一次遍历定位呢，只需要最开始前后指针就相隔5个位置（相当于窗口长度）
+// 窗口长度固定，窗口后移，如果后指针到尾部了，那么前指针就自然是到达我们要的位置啦！
+
+class Solution {
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        
+        if(head == null){
+            return head;
+        }
+        ListNode res = new ListNode();
+        res.next = head;
+        ListNode start = new ListNode();
+        ListNode end  = new ListNode();
+        start = head ; 
+        end = head ;
+        int i = 0 ;
+        while(i < n && start != null){
+            start = start.next ;
+            i++;
+        }
+        if(start == null){
+            res.next = head.next;
+            return res.next;
+        }
+        while(start.next != null){
+            end = end.next;
+            start = start.next;
+        }
+        end.next = end.next.next;
+        return res.next;
+
+    }
+}

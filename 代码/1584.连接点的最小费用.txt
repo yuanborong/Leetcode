@@ -1,0 +1,80 @@
+class edge{
+
+    public int[] node1 ; 
+    public int[] node2 ;
+    public int nodeNo1 ;
+    public int nodeNo2 ;
+    public int cost ;
+
+    public edge(int[] node1 , int[] node2 , int nodeNo1 , int nodeNo2){
+        this.node1 = node1 ;
+        this.node2 = node2 ;
+        this.nodeNo1 = nodeNo1 ;
+        this.nodeNo2 = nodeNo2 ;
+        this.cost = Math.abs(node1[0] - node2[0]) + Math.abs(node1[1] - node2[1]);
+    }
+
+}
+
+class Solution {
+
+    public edge[] edgeSet ;
+    public int[] parent ;
+
+    public int minCostConnectPoints(int[][] points) {
+
+        int len = points.length ;
+        if(len <= 1) return 0;
+        int edgeSum = ((len - 1) * len / 2);
+        edgeSet = new edge[edgeSum];
+        parent = new int[len] ;
+        for(int i = 0 ; i < len ; i++) parent[i] = i;
+        int index = 0;
+        for(int i = 0 ; i < len ; i++){
+            for(int j = i + 1 ; j < len ; j++){
+                edgeSet[index++] = new edge(points[i] , points[j] , i , j);
+            }
+        }
+
+        Arrays.sort(edgeSet , new Comparator<edge>(){
+            @Override
+            public int compare(edge a , edge b){
+                return a.cost - b.cost ;
+            }
+        });
+
+        index = 0 ;
+        int count = 0 ;
+        int res = 0;
+        int parent1 = find(edgeSet[index].nodeNo1) , parent2 = find(edgeSet[index].nodeNo2) ;
+        while(count < len - 1){
+            while(index < edgeSum){
+                parent1 = find(edgeSet[index].nodeNo1) ;
+                parent2 = find(edgeSet[index].nodeNo2) ; 
+                if(parent1 != parent2) break;
+                index++;
+            }
+            union(parent1 , parent2);
+            res += edgeSet[index++].cost;
+            count++;
+        }
+
+        return res;
+
+    }
+
+    public int find(int x){
+        return (x == parent[x]) ? x : find(parent[x]) ; 
+    }
+
+    public void union(int a , int b){
+        int parentA = find(a);
+        int parentB = find(b);
+
+        if(parentA != parentB) {
+            parent[parentA] = parentB ;
+        }
+
+    }
+
+}

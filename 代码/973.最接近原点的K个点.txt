@@ -1,0 +1,45 @@
+class Solution {
+
+    public int getDistance(int i , int j){
+        return i * i + j * j;
+    }
+
+    public int[][] kClosest(int[][] points, int K) {
+
+        int len = points.length;
+        if(len <= 0 || K <= 0) return new int[1][2];
+
+        int[] distance = new int[len];
+
+        PriorityQueue<Integer> heap = new PriorityQueue<>(new Comparator<Integer>(){
+            @Override
+            public int compare(Integer a , Integer b){
+                return distance[b] - distance[a];
+            }
+        });
+
+        for(int i = 0 ; i < len ; i++){
+            distance[i] = getDistance(points[i][0] , points[i][1]);
+        }
+
+        for(int i = 0 ; i < len ; i++){
+            if(heap.size() < K){
+                heap.add(i);
+            }
+            else{
+                if(distance[heap.peek()] > distance[i] ){
+                    heap.remove();
+                    heap.add(i);
+                }
+            }
+        }
+
+        int[][] res = new int[K][2];
+        for(int i = 0 ; i < K ; i++){
+            int cur_index = heap.remove();
+            res[i][0] = points[cur_index][0];
+            res[i][1] = points[cur_index][1];
+        }
+        return res;
+    }
+}

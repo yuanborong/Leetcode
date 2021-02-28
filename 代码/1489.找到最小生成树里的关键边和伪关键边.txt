@@ -1,0 +1,105 @@
+class Solution {
+    public List<List<Integer>> findCriticalAndPseudoCriticalEdges(int n, int[][] edges) {
+
+        List<List<Integer>> res = new ArrayList<>();
+        List<Integer> keyEdge = new ArrayList<>();
+        List<Integer> fakeKeyEdge = new ArrayList<>();
+        int len = edges.length;
+
+        int[][] newEdges = new int[len][4];
+        for(int i = 0 ; i < len ; i++){
+            newEdges[i][0] = edges[i][0];
+            newEdges[i][1] = edges[i][1];
+            newEdges[i][2] = edges[i][2];
+            newEdges[i][3] = i;
+        }
+
+        Arrays.sort(newEdges , (int[] a , int[] b) -> {
+            return a[2] - b[2] ;
+        });
+
+        int minWeightSum = getMSTExscludeEdge(n , newEdges , len , -1);
+        for(int i = 0 ; i < len ; i++){
+            // 判断是否是关键边：如果排除它后不能构建MST，那么它就是关键边
+            if(getMSTExscludeEdge(n , newEdges , len , i) > minWeightSum ){
+                keyEdge.add(newEdges[i][3]);
+            }
+            // 如果这条边不是关键边，那么判断是否是伪关键边：如果包含它后能构建MST，那么它就是伪关键边
+            else if(getMSTIntscludeEdge(n , newEdges , len , i) == minWeightSum){
+                fakeKeyEdge.add(newEdges[i][3]);
+            }
+        }
+
+        res.add(keyEdge);
+        res.add(fakeKeyEdge);
+
+        return res;
+
+    }
+
+    // 排除第i条边进行构建MST，克鲁斯卡尔算法(并查集)
+    // 如果能够构成一个MST，返回MST的权值和，如果不能，返回一个最大的整数
+    public int getMSTExscludeEdge(int n , int[][] edges , int len , int edgesId){
+
+        int[] parents = new int[n];
+        for(int i = 0 ; i < n ; i++){
+            parents[i] = i ;
+        }
+
+        int count = 0;
+        int minWeightSum = 0;
+        int parentA , parentB;
+        for(int i = 0 ; i < len ; i++){
+            if(i == edgesId) continue;
+            parentA = edges[i][0];
+            parentB = edges[i][1];
+            while(parentA != parents[parentA]) parentA = parents[parentA];
+            while(parentB != parents[parentB]) parentB = parents[parentB];
+            if(parentA != parentB){
+                count++;
+                parents[parentA] = parentB ;
+                minWeightSum += edges[i][2] ;
+            }
+        }
+
+        return (count == n - 1) ? minWeightSum : Integer.MAX_VALUE;
+
+    }
+
+    // 包含第i条边构建一个MST
+    // 如果可以构建MST，那么就返回最小的权值和；如果不行，就返回一个最大整数
+    public int getMSTIntscludeEdge(int n , int[][] edges , int len , int edgesId){
+
+        int[] parents = new int[n];
+        int count = 0;
+        int minWeightSum = 0;
+        int parentA , parentB;
+        for(int i = 0 ; i < n ; i++){
+            parents[i] = i ;
+        }
+
+        // 保证这条边已经包含在MST里面
+        parents[edges[edgesId][0]] = edges[edgesId][1];
+        count++;
+        minWeightSum += edges[edgesId][2];
+        
+        for(int i = 0 ; i < len ; i++){
+            if(i == edgesId){
+                continue;
+            }
+            parentA = edges[i][0];
+            parentB = edges[i][1];
+            while(parentA != parents[parentA]) parentA = parents[parentA];
+            while(parentB != parents[parentB]) parentB = parents[parentB];
+            if(parentA != parentB){
+                count++;
+                parents[parentA] = parentB ;
+                minWeightSum += edges[i][2] ;
+            }
+        }
+
+        return (count == n - 1) ? minWeightSum : Integer.MAX_VALUE;
+
+    }
+
+}

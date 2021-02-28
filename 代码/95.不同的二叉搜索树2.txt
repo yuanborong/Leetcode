@@ -1,0 +1,72 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+
+    public List<TreeNode> traceback(int left , int right){
+
+        if(left > right){
+            return new ArrayList<TreeNode>();
+        }
+        List<TreeNode> left_child_list ;
+        List<TreeNode> right_child_list;
+        List<TreeNode> root_list = new ArrayList<>();
+        for(int i = left ; i <= right ; i++){
+            left_child_list = traceback(left , i-1);
+            right_child_list = traceback(i+1 , right);
+            if(left_child_list.size() == 0 && right_child_list.size() == 0){
+                TreeNode root = new TreeNode(i);
+                root_list.add(root);
+                return root_list;
+            }
+            if(left_child_list.size() == 0){
+                for(int k = 0 ; k < right_child_list.size() ; k++){
+                    TreeNode root = new TreeNode(i);
+                    root.left = null;
+                    root.right = right_child_list.get(k);
+                    root_list.add(root);
+                }
+            }
+            else if(right_child_list.size() == 0){
+                for(int k = 0 ; k < left_child_list.size() ; k++){
+                    TreeNode root = new TreeNode(i);
+                    root.left = left_child_list.get(k);
+                    root.right = null;
+                    root_list.add(root);
+                }
+            }
+            else{
+                for(int j = 0 ; j < left_child_list.size() ; j++){
+                    for(int k = 0 ; k < right_child_list.size() ; k++){
+                        TreeNode root = new TreeNode(i);
+                        root.left = left_child_list.get(j);
+                        root.right = right_child_list.get(k);
+                        root_list.add(root);
+                    }
+                }
+            }
+            
+        }
+        return new ArrayList<>(root_list);
+
+    }
+
+    public List<TreeNode> generateTrees(int n) {
+        if(n == 0){
+            return new ArrayList<>();
+        }
+        return traceback(1 , n);
+    }
+}

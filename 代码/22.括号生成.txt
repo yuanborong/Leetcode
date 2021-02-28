@@ -1,0 +1,27 @@
+
+class Solution {
+
+    private List<String> res;
+
+    public void dfs(String a , int left , int right , int n){
+        if(a.length() == n * 2){
+            res.add(a);
+        }
+        if(left < n){
+            dfs(a + '(' , left + 1 , right , n);
+        }
+        if(right < left){
+            dfs(a + ')' , left , right + 1 , n);
+        }
+        return;
+    }
+
+    public List<String> generateParenthesis(int n) {
+        if(n <= 0){
+            return this.res;
+        }
+        res = new ArrayList();
+        dfs("" , 0 , 0 , n);
+        return res;
+    }
+}

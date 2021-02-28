@@ -1,0 +1,28 @@
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+
+        int len = nums.size();
+        vector<int> res;
+        if(len == 0 || len == 1){
+            return res;
+        }
+        int left = 0 , right = len - 1 , sum;
+        while(left < right){
+            sum = nums[left] + nums[right];
+            if(sum == target){
+                res.push_back(nums[left]);
+                res.push_back(nums[right]);
+                break;
+            }
+            else if(sum < target){
+                left++;
+            }
+            else{
+                right--;
+            }
+        }
+        return res;
+
+    }
+};

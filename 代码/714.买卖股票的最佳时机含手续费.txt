@@ -1,0 +1,21 @@
+class Solution {
+    public int maxProfit(int[] prices, int fee) {
+
+        int len = prices.length;
+        if(len <= 1) return 0;
+
+        int[] dpHave = new int[len];
+        int[] dpNoHave = new int[len];
+
+        dpHave[0] = -prices[0];
+        dpNoHave[0] = 0;
+
+        for(int i = 1 ; i < len ; i++){
+            dpHave[i] = Math.max(dpNoHave[i-1] - prices[i] , dpHave[i-1]);
+            dpNoHave[i] = Math.max(dpHave[i-1] + prices[i] - fee , dpNoHave[i-1]);
+        }
+        int res = Math.max(dpNoHave[len-1] , dpHave[len-1]);
+        return (res < 0) ? 0 : res ;
+
+    }
+}

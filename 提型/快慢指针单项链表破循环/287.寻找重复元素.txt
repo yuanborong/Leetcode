@@ -1,0 +1,26 @@
+class Solution {
+    public int findDuplicate(int[] nums) {
+
+        int len = nums.length;
+        
+        int slow_index = 0 , fast_index = 0;
+
+        //快慢指针寻找第一个碰到的值
+        do{
+            slow_index = nums[slow_index];
+            fast_index = nums[fast_index];
+            fast_index = nums[fast_index];
+        }while(fast_index != slow_index);
+
+
+        //快慢指针寻找入口
+        slow_index = 0;
+        do{
+            slow_index = nums[slow_index];
+            fast_index = nums[fast_index];
+        }while(fast_index != slow_index);
+
+        return fast_index;
+
+    }
+}

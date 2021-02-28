@@ -1,0 +1,25 @@
+class Solution {
+    public int[] smallerNumbersThanCurrent(int[] nums) {
+
+        int len = nums.length;
+        if(len <= 0){
+            return new int[1];
+        }
+        int[] res = new int[len];
+        // 复制一个新的数组
+        int[] temp = Arrays.copyOf(nums , len);
+        Arrays.sort(nums);
+        Map<Integer , Integer> map = new HashMap<>();
+        for(int i = 0 ; i < len ; i++){
+            if(map.containsKey(nums[i]) == false){
+                map.put(nums[i] , i);
+            }
+        }
+        
+        for(int i = 0 ; i < len ; i++){
+            res[i] = map.get(temp[i]);
+        }
+        return res;
+
+    }
+}

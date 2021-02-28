@@ -1,0 +1,27 @@
+class Solution {
+    public int subarraySum(int[] nums, int k) {
+
+        int len = nums.length;
+        if(len <= 0){
+            return 0;
+        }
+        int res = 0;
+
+        int[] pre_nums = new int[len];
+        pre_nums[0] = nums[0];
+        for(int i = 1 ; i < len ; i++){
+            pre_nums[i] = (pre_nums[i-1] + nums[i]);
+        }
+
+        for(int left = 0 ; left < len ; left++){
+            for(int right = left ; right < len ; right++){
+                if(pre_nums[right] - pre_nums[left] + nums[left] == k){
+                    res++;
+                }
+            }
+        }
+
+        return res;
+
+    }
+}

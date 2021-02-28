@@ -1,0 +1,34 @@
+class Solution {
+    public int[] relativeSortArray(int[] arr1, int[] arr2) {
+
+        int len1 = arr1.length;
+        int len2 = arr2.length;
+
+        if(len1 <= 1 || len2 <= 1) return arr1;
+        Map<Integer , Integer> map = new HashMap<>();
+
+        for(int i = 0 ; i < len2 ; i++){
+            map.put(arr2[i] , i);
+        }
+
+        Integer[] integer = Arrays.stream(arr1).boxed().toArray(Integer[]::new);
+        Arrays.sort(integer , new Comparator<Integer>(){
+            @Override
+            public int compare(Integer a , Integer b){
+                if(map.containsKey(a) == false && map.containsKey(b) == false){
+                    return a - b;
+                }
+                if(map.containsKey(a) == false){
+                    return 1;
+                }
+                if(map.containsKey(b) == false){
+                    return -1;
+                }
+                return map.get(a) - map.get(b);
+            }
+        });
+
+        return Arrays.stream(integer).mapToInt(Integer::valueOf).toArray();
+
+    }
+}

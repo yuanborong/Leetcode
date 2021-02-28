@@ -1,0 +1,41 @@
+class Solution {
+    public List<Integer> addToArrayForm(int[] A, int K) {
+
+        int len = A.length;
+        List<Integer> res = new ArrayList<>();
+
+        Deque<Integer> queue = new LinkedList<>();
+        int index = len - 1 , curNum , jinwei = 0;
+        while(K != 0 && index >= 0){
+            curNum = K % 10 ;
+            K /= 10;
+            curNum = curNum + A[index] + jinwei;
+            queue.addFirst(curNum % 10);
+            jinwei = curNum / 10 ;
+            index--;
+        }
+        while(K != 0){
+            curNum = K % 10 ;
+            K /= 10;
+            curNum = curNum + jinwei;
+            queue.addFirst(curNum % 10);
+            jinwei = curNum / 10 ;
+        }
+        while(index >= 0){
+            curNum = A[index] + jinwei;
+            queue.addFirst(curNum % 10);
+            jinwei = curNum / 10 ;
+            index--;
+        }
+        if(jinwei != 0){
+            queue.addFirst(jinwei);
+        }
+
+        while(queue.isEmpty() == false){
+            res.add(queue.removeFirst());
+        }
+
+        return res;
+
+    }
+}

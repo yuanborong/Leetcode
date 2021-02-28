@@ -1,0 +1,30 @@
+class Solution {
+    public int fourSumCount(int[] A, int[] B, int[] C, int[] D) {
+
+        int len = A.length;
+        if(len == 0) return 0;
+
+        // 将AB之和用一个Map进行存储，key是AB之和，value是AB之和出现了多少次（不用有序）
+        // 同时将CD之和用一个Map存储
+        // 分别遍历AB和CD组合的和情况，就是O(n2 + n2) = O(n2)时间复杂度，是最好的
+        Map<Integer , Integer> AB = new HashMap<>();
+        int temp ;
+        int res = 0;
+        for(int i : A){
+            for(int j : B){
+                temp = i + j ;
+                if(!AB.containsKey(temp)) AB.put(temp , 1);
+                else AB.put(temp , AB.get(temp) + 1);
+            }
+        }
+        for(int i : C){
+            for(int j : D){
+                temp = i + j ;
+                if(AB.containsKey(-temp)) res += AB.get(-temp);
+            }
+        }
+       
+        return res;
+
+    }
+}

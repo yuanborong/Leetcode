@@ -1,0 +1,46 @@
+// 贪心：首先必须确保前面已经划分出来的数组都是符合要求的（每个子序列长度都>3）
+// 考虑第i个元素该往前分配还是往后分配：
+// 第一步：统一先往前分配（假设允许的话）
+// 第二步：往前分不行，那就再考虑后面是否还有两个连续的数字和这个数字一块组合，如果可以那就这么做
+// 要是一、二步都不行，那么就不可能能划分出来，返回false
+
+class Solution {
+    public boolean isPossible(int[] nums) {
+
+        int len = nums.length;
+        if(len <= 2) return false;
+
+        Map<Integer , Integer> count = new HashMap<>();
+        // 用end的map来存储，key是前面遍历时已经满足划分要求的子序列的结尾元素
+        // value是以这个结尾元素为结尾的子序列总共有多少个（注意：存储的必须是这些子序列长度早已>=3了，看哪个可以接收后面的元素）
+        Map<Integer , Integer> end = new HashMap<>();
+
+        for(int i : nums){
+            if(count.containsKey(i)) count.put(i , count.get(i)+1);
+            else count.put(i , 1);
+        }
+
+        for(int i : nums){
+            if(count.get(i) == 0) continue;
+            if(end.containsKey(i-1) && end.get(i-1) > 0){
+                count.put(i , count.get(i)-1);
+                end.put(i-1 , end.get(i-1)-1);
+                if(end.containsKey(i)) end.put(i , end.get(i)+1);
+                else end.put(i , 1);
+            }
+            else if(count.containsKey(i+1) && count.get(i+1) > 0 && count.containsKey(i+2) && count.get(i+2) > 0){
+                count.put(i , count.get(i)-1);
+                count.put(i+1 , count.get(i+1)-1);
+                count.put(i+2 , count.get(i+2)-1);
+                if(end.containsKey(i+2)) end.put(i+2 , end.get(i+2)+1);
+                else end.put(i+2 , 1);
+            }
+            else{
+                return false;
+            }
+        }
+
+        return true;
+
+    }
+}

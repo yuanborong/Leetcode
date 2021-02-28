@@ -1,0 +1,51 @@
+class Solution {
+public:
+
+    string getString(int num){
+        if(num == 0){
+            return "0";
+        }
+        string res;
+        while(num){
+            res = (char)(num % 10 + '0') + res;
+            num /= 10;
+        }
+        return res;
+    }
+
+    bool check(string str){
+        int res = 0;
+        for(int i = 0 ; i < str.size() ; i++){
+            res *= 10;
+            res += (str[i] - '0');
+        }
+        return (res >= 10 && res <= 25);
+    }
+
+    int translateNum(int num) {
+
+        string str = getString(num);
+        // cout << str << endl;
+        int len = str.size();
+        if(len == 0){
+            return 0;
+        }
+        if(len == 1){
+            return 1;
+        }
+        int dp[len];
+        dp[0] = 1;
+        dp[1] = 1;
+        if(check(str.substr(0 , 2))){
+            dp[1]++;
+        }
+        for(int i = 2 ; i < len ; i++){
+            dp[i] = dp[i-1];
+            if(check(str.substr(i-1 , 2))){
+                dp[i] += dp[i-2];
+            }
+        }
+        return dp[len-1];
+
+    }
+};

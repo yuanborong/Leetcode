@@ -1,0 +1,89 @@
+// 删除最多的边 == 保留最少的边
+// 优先保留双向边
+class Solution {
+    public int maxNumEdgesToRemove(int n, int[][] edges) {
+
+        int len = edges.length ;
+        if(len < n - 1) return -1;
+
+        DSU Alice = new DSU(n) ;
+        DSU Bob = new DSU(n) ;
+        int res = 0 ;
+
+        // 优先保留双向边
+        for(int[] edge : edges){
+            if(edge[0] == 3){
+                boolean linkAlice = Alice.union(edge[1] , edge[2]) ;
+                boolean linkBob =  Bob.union(edge[1] , edge[2]) ;
+                // 如果这个双向边下，Alice和Bob的两个结点都已经相连，那么它就可以被删除
+                // 否则就可以保留下来
+                if(linkAlice && linkBob) res++ ;
+            }
+        }
+
+        // 再考虑单向边
+        for(int[] edge : edges){
+            if(edge[0] == 1){
+                boolean linkAlice = Alice.union(edge[1] , edge[2]) ;
+                if(linkAlice) res++;
+            }
+            else if(edge[0] == 2){
+                boolean linkBob = Bob.union(edge[1] , edge[2]) ;
+                if(linkBob) res++;
+            }
+        }
+
+        return (Alice.check() && Bob.check()) ? res : -1 ;
+
+    }
+}
+
+class DSU{
+
+    public int[] parents ;
+    public int n ;
+
+    public DSU(){
+
+    }
+
+    public DSU(int n){
+        this.parents = new int[n+1] ;
+        this.n = n ; 
+        for(int i = 1 ; i <= n ; i++){
+            parents[i] = i;
+        } 
+    }
+
+    // 每一次找根节点时，把中间的所有结点的根节点都进行更新
+    // 这样下次进行找的时候就快很多
+    public int find(int x){
+        // if(x == parents[x]){
+        //     return x;
+        // }
+        // parents[x] = find(parents[x]) ;
+        // return parents[x] ;
+        return (x == parents[x]) ? x : (parents[x] = find(parents[x])) ; 
+    }
+
+    public boolean union(int x , int y){
+        int parentsX = find(x) ;
+        int parentsY = find(y) ;
+        if(parentsX == parentsY) return true ;
+        parents[parentsX] = parentsY ;
+        return false;
+    }
+
+    // 判断一个DSU是否连通：只需要判断根节点是否只有一个
+    // 根节点：parents[root] = root
+    public boolean check(){
+        int countRoot = 0 ;
+        for(int i = 1 ; i <= n ; i++){
+            if(parents[i] == i){
+                countRoot++;
+            }
+        }
+        return (countRoot == 1) ? true : false;
+    }
+
+}

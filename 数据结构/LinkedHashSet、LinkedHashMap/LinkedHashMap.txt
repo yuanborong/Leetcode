@@ -1,0 +1,7 @@
+https://www.cnblogs.com/goingforward/p/8038637.html
+https://blog.csdn.net/u014634338/article/details/78494051
+
+
+HashMap、HashSet、LinkedHashSet、LinkedHashMap这些都是set
+（1）特点1：remove方法接收的参数不可能是下标，不能通过下标删除（linkedlist这种是list，有顺序，可以通过下标）,只能通过key进行删除
+（2）特点2：contains来访问

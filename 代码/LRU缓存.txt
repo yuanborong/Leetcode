@@ -1,0 +1,74 @@
+class LRUCache {
+
+    private int capacity;
+    private int cache_size;
+    private LinkedHashSet<Node> lhs;
+    private HashMap<Integer , Node> hm;
+
+    public LRUCache(int capacity) {
+        this.lhs = new LinkedHashSet<>(capacity);
+        this.hm = new HashMap<>(capacity);
+        this.capacity = capacity;
+        this.cache_size = 0;
+    }
+    
+    public int get(int key) {
+        if(cache_size == 0 || hm.containsKey(key) == false){
+            return -1;
+        }
+        else{
+            Node cur_node = hm.get(key);
+            lhs.remove(cur_node);
+            lhs.add(cur_node);
+            return cur_node.value;
+        }
+        
+    }
+    
+    public void put(int key, int value) {
+
+        if(hm.containsKey(key) == true){
+            Node cur_node = hm.get(key);
+            lhs.remove(cur_node);
+            cur_node.value = value;
+            lhs.add(cur_node);
+        }
+        else{
+            Node new_node = new Node(key , value);
+            if(cache_size < capacity){
+                hm.put(key , new_node);
+                lhs.add(new_node);
+                cache_size++;
+            }
+            else{
+                Node removing_node = lhs.iterator().next();
+                hm.remove(removing_node.key);
+                lhs.remove(removing_node);
+                hm.put(key , new_node);
+                lhs.add(new_node);
+            }
+        }
+
+    }
+}
+
+class Node{
+
+    int key;
+    int value;
+
+    public Node(){}
+
+    public Node(int key , int value){
+        this.key = key;
+        this.value = value;
+    }
+
+}
+
+/**
+ * Your LRUCache object will be instantiated and called as such:
+ * LRUCache obj = new LRUCache(capacity);
+ * int param_1 = obj.get(key);
+ * obj.put(key,value);
+ */

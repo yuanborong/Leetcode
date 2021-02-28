@@ -1,0 +1,82 @@
+class WordDictionary {
+
+    struct Node{
+        Node *next_character[26];
+        bool has_next;
+        bool is_end;
+        Node(){
+            has_next = false;
+            is_end = false;
+            for(int i = 0 ; i < 26 ; i++){
+                next_character[i] = NULL;
+            }
+        }
+
+    };
+
+private:
+    Node *root;
+
+public:
+    /** Initialize your data structure here. */
+    WordDictionary() {
+        root = new Node();
+    }
+    
+    /** Adds a word into the data structure. */
+    void addWord(string word) {
+        Node *p = root;
+        for(int i = 0 ; i < word.size() ; i++){
+            if(p->next_character[word[i]-'a'] == NULL){
+                Node *new_node = new Node();
+                p->next_character[word[i]-'a'] = new_node;
+                p->has_next = true;
+            }
+            p = p->next_character[word[i]-'a'];
+        }
+        p->is_end = true;
+        return;
+    }
+
+    bool dfs(Node* p , string word , int index){
+        if(index == word.size() ){
+            if(p->is_end == true){
+                return true;
+            }
+            else{
+                return false;
+            }
+            
+        }
+        if(word[index] == '.'){
+            for(int i = 0 ; i < 26 ; i++){
+                if(p->next_character[i] != NULL){
+                   if(dfs(p->next_character[i] , word , index+1) == true){
+                       return true;
+                   }
+                }
+            }
+            return false;
+        }
+        else{
+            if(p->next_character[word[index]-'a'] == NULL){
+                return false;
+            }
+            return dfs(p->next_character[word[index]-'a'] , word , index+1);
+        }
+        return false;
+    }
+    
+    /** Returns if the word is in the data structure. A word could contain the dot character '.' to represent any one letter. */
+    bool search(string word) {
+        // cout << root->has_next << " ";
+        return dfs(root , word , 0);
+    }
+};
+
+/**
+ * Your WordDictionary object will be instantiated and called as such:
+ * WordDictionary* obj = new WordDictionary();
+ * obj->addWord(word);
+ * bool param_2 = obj->search(word);
+ */

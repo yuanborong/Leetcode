@@ -1,0 +1,32 @@
+class Solution {
+
+    public int getFloor(int n){
+        int result = 1;
+        for(int i = 1 ; i <= n ; i++){
+            result *= i;
+        }
+        return result;
+    }
+
+    public String getPermutation(int n, int k) {
+
+        if( n < 1 || n > 9){
+            return "";
+        }
+        String result = "";
+        List<Integer> l = new ArrayList<>();
+        for(int i = 1 ; i <= n ;i++){
+            l.add(i);
+        }
+        int index , floor_number , number;
+        for(int i = 0 ; i < n ; i++){
+            floor_number = getFloor(n - i - 1);
+            index = (k - 1) / floor_number;
+            number = l.get(index);
+            result += String.valueOf(number);
+            k -= (index * floor_number);
+            l.remove(index);
+        }
+        return result;
+    }
+}

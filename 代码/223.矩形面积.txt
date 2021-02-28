@@ -1,0 +1,20 @@
+class Solution {
+    public int computeArea(int A, int B, int C, int D, int E, int F, int G, int H) {
+        
+        int res = (D - B) * (C - A) + (H - F) * (G - E);
+        //首先判断有没有重叠
+        if(F >= D || G <= A || H <= B || C <= E){
+            return res ;
+        }
+
+        //如果有重叠，把重叠的部分算出来
+        //计算重叠部分的上边，只可能在D , H产生
+        int y1 = (D > H)?H:D;
+        //下边
+        int y2 = (B > F)?B:F;
+        int x1 = (A > E)?A:E;
+        int x2 = (C > G)?G:C;
+
+        return res - ((y1 - y2) * (x2 - x1));
+    }
+}

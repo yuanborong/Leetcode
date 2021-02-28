@@ -1,0 +1,67 @@
+class Solution {
+
+    public boolean res ;
+    public boolean[][] flag;
+    public char[][] board;
+    public String word;
+
+    public void traceback(int i , int j , int str_index){
+
+        if(res == true){
+            return;
+        }
+        if(str_index == word.length()){
+            res = true;
+            return;
+        }
+        if(i < 0 || i >= board.length || j < 0 || j >= board[0].length || board[i][j] != word.charAt(str_index)){
+            res = false;
+            return;
+        }
+        if(flag[i][j] == true){
+            return;
+        }
+        // 如果相同
+        // 向上走
+        flag[i][j] = true;
+        traceback(i-1 , j , str_index+1);
+        traceback(i+1 , j , str_index+1);
+        traceback(i , j-1 , str_index+1);
+        traceback(i , j+1 , str_index+1);
+        flag[i][j] = false;
+        return ;
+    }
+
+    public boolean exist(char[][] board, String word) {
+
+        int height = board.length;
+        if(height <= 0){
+            return false;
+        }
+        int width = board[0].length;
+        if(width <= 0){
+            return false;
+        }
+        int str_len = word.length();
+        if(str_len == 0){
+            return true;
+        }
+        res = false;
+        this.board = board;
+        this.word = word;
+        this.flag = new boolean[height][width];
+        for(int i = 0 ; i < height ; i++){
+            for(int j = 0 ; j < width ; j++){
+                traceback(i , j , 0);
+                if(res == true){
+                    return res;
+                }
+            }
+            if(res == true){
+                    return res;
+                }
+        }
+        return res;
+
+    }
+}

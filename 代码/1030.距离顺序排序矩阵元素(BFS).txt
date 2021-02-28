@@ -1,0 +1,44 @@
+class Solution {
+
+    public int[][] allCellsDistOrder(int R, int C, int r0, int c0) {
+
+        if(R <= 0 || C <= 0) return new int[R][C];
+        if(r0 < 0 || r0 >= R || c0 < 0 || c0 >= C) return new int[R][C];
+
+        boolean[][] flag = new boolean[R][C];
+        int[][] res = new int[R * C][2];
+        int index = 0 , i , j;
+        // BFS
+        LinkedList<int[]> queue = new LinkedList<>();
+        int[] temp = {r0 , c0};
+        int[] cur_node ;
+        queue.addLast(temp);
+        flag[r0][c0] = true;
+        while(!queue.isEmpty()){
+            cur_node = queue.removeFirst();
+            i = cur_node[0] ;
+            j = cur_node[1];
+            res[index][0] = cur_node[0];
+            res[index][1] = cur_node[1];
+            index++;
+            if(i-1 >= 0 && i-1 < R && !flag[i-1][j]){
+                queue.addLast(new int[]{i-1 , j});
+                flag[i-1][j] = true;
+            }
+            if(i+1 >= 0 && i+1 < R && !flag[i+1][j]){
+                queue.addLast(new int[]{i+1 , j});
+                flag[i+1][j] = true;
+            }
+            if(j-1 >= 0 && j-1 < C && !flag[i][j-1]){
+                queue.addLast(new int[]{i , j-1});
+                flag[i][j-1] = true;
+            }
+            if(j+1 >= 0 && j+1 < C && !flag[i][j+1]){
+                queue.addLast(new int[]{i , j+1});
+                flag[i][j+1] = true;
+            }
+        }
+        return res;
+
+    }
+}

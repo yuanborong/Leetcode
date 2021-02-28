@@ -1,0 +1,28 @@
+// 单调栈
+// 问题就是要找每个元素右边第一个大于自己的元素。
+// 逆向思维：判断每个元素能作为哪些左边元素的第一个大于他的元素呢？
+// 所以就要用单调栈存储左边尚为找到第一个大于他的元素的元素
+// 很明显就是栈顶元素就是波谷，所以是单调递减栈
+// 每次更新的元素目标不一定是每个元素
+// 每次更新的元素可以改成是栈中的元素，特别是栈顶元素，递减栈往右走，总能先碰到第一个大于栈顶的元素，此时更新栈顶元素就可以啦
+
+class Solution {
+    public int[] dailyTemperatures(int[] T) {
+
+        int len = T.length;
+        if(len == 0) return new int[len];
+
+        int[] res = new int[len];
+        Stack<Integer> stack = new Stack<>();
+
+        for(int i = 0 ; i < len ; i++){
+            while(!stack.isEmpty() && T[stack.peek()] < T[i]){
+                int cur_peek = stack.pop();
+                res[cur_peek] = (i - cur_peek);
+            }
+            stack.push(i);
+        }
+        return res;
+
+    }
+}

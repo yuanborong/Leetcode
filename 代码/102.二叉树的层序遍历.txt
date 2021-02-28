@@ -1,0 +1,53 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+
+        Queue<TreeNode> q_node = new LinkedList<>();
+        Queue<Integer> q_degree = new LinkedList<>();
+
+        List<List<Integer>> res = new ArrayList<>();
+
+        if(root == null){
+            return res;
+        }
+
+        q_node.add(root);
+        q_degree.add(1);
+        int cur_degree , pre_degree = 1;
+        TreeNode cur_node ;
+        List<Integer> temp = new ArrayList<>();
+        // temp.add(root.val);
+        while(q_node.isEmpty() == false){
+            cur_node = q_node.remove();
+            cur_degree = q_degree.remove();
+            // System.out.println(pre_degree + " " + cur_degree);
+            
+            if(cur_degree != pre_degree){
+                res.add(temp);
+                temp = new ArrayList<>() ;
+            }
+            temp.add(cur_node.val);
+            if(cur_node.left != null){
+                q_node.add(cur_node.left);
+                q_degree.add(cur_degree+1);
+            }
+            if(cur_node.right != null){
+                q_node.add(cur_node.right);
+                q_degree.add(cur_degree+1);
+            }
+            pre_degree = cur_degree;
+
+        }
+        res.add(temp);
+        return res;
+
+    }
+}
