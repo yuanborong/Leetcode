@@ -1,0 +1,29 @@
+class NumArray {
+
+    public int[] preSum ;
+
+    public NumArray(int[] nums) {
+
+        int len = nums.length ;
+        preSum = new int[len+1] ;
+        if(len == 0) return ;
+        preSum[1] = nums[0] ;
+        for(int i = 2 ; i <= len ; i++){
+            preSum[i] = preSum[i-1] + nums[i-1] ;
+            // System.out.print(preSum[i]) ;
+        }
+
+    }
+    
+    public int sumRange(int i, int j) {
+
+        return this.preSum[j+1] - this.preSum[i] ;
+
+    }
+}
+
+/**
+ * Your NumArray object will be instantiated and called as such:
+ * NumArray obj = new NumArray(nums);
+ * int param_1 = obj.sumRange(i,j);
+ */
