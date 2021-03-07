@@ -1,0 +1,84 @@
+// 同样是BFS，关键是queue的存储元素是每一条route，每次取出一条route出来，对route最后一个单词做延伸到下一个单词
+
+class Solution {
+
+    List<List<String>> res ;
+
+    public List<List<String>> findLadders(String beginWord, String endWord, List<String> wordList) {
+
+        res = new ArrayList<>() ;
+        int lenWord = beginWord.length() ;
+        int lenList = wordList.size() ;
+        if(lenWord == 0 || lenList == 0){
+            return res ;
+        }
+        if(wordList.contains(endWord) == false){
+            return res ;
+        }
+        bfs(beginWord , endWord , lenWord , wordList) ;
+        return res ;
+
+    }
+
+    public void bfs(String beginWord , String endWord , int lenWord , List<String> wordList){
+
+        Deque<List<String>> queue = new LinkedList<>() ;
+        List<String> curRoute = new ArrayList<>() ;
+        Set<String> visited = new HashSet<>() ;
+        Set<String> dict = new HashSet<>(wordList) ;
+        curRoute.add(beginWord) ;
+        queue.addLast(curRoute) ;
+        boolean isFound = false ;
+        visited.add(beginWord) ;
+        while(queue.isEmpty() == false){
+            // 为何要subVisited？subVisited记录在这当前路径最后一个单词下，已经经过判断然后加入路径的邻居
+            // 为何这些邻居不马上加入外部的visited呢？因为在同一层中，其他路径在这一层如果同样碰到这个邻居，
+            // 是要将这个相同邻居加入这个不一样的路径的！
+            // 要不然的话，答案就不全了
+            // 等到这一层的节点都遍历完了，再把subVisited加入到visited中即可
+            Set<String> subVisited = new HashSet<>() ;
+            int curQueueSize = queue.size() ;
+            for(int i = 0 ; i < curQueueSize ; i++){
+                curRoute = queue.removeFirst() ;
+                String curRouteLastWord = curRoute.get(curRoute.size()-1) ;
+                List<String> neighbors = getNeighbors(curRouteLastWord , lenWord , dict) ;
+                for(String neighbor : neighbors){
+                    // 如果当前层已经考虑过了这个单词，那么下一层（当前层单词的邻居也就是下一层）就不要考虑了
+                    if(!visited.contains(neighbor)){
+                        curRoute.add(neighbor) ;
+                        if(neighbor.equals(endWord)){
+                            isFound = true ;
+                            res.add(new ArrayList<>(curRoute)) ;
+                        }
+                        queue.addLast(new ArrayList<>(curRoute)) ;
+                        subVisited.add(neighbor) ;
+                        curRoute.remove(curRoute.size()-1) ;    
+                    }
+                }
+            }
+            if(isFound) break ;
+            visited.addAll(subVisited) ;
+        }
+        return ;
+    }
+
+
+    public List<String> getNeighbors(String curWord , int lenWord , Set<String> set){
+
+        List<String> neighbors = new ArrayList<>() ;
+        for(int i = 0 ; i < lenWord ; i++){
+            char[] temp = curWord.toCharArray() ;
+            char oldCh = temp[i] ;
+            for(char ch = 'a' ; ch <= 'z' ; ch++){
+                if(ch == oldCh ) continue ;
+                temp[i] = ch ;
+                String curStr = String.valueOf(temp) ;
+                if(set.contains(curStr)){
+                    neighbors.add(curStr) ;
+                }
+            }
+        }
+        return neighbors ;
+    }
+
+}
