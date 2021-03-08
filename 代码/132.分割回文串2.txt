@@ -1,0 +1,51 @@
+class Solution {
+    public int minCut(String s) {
+
+        int len = s.length() ;
+        char[] arrS = s.toCharArray() ;
+        if(len <= 0) return 0 ;
+
+        boolean[][] flag = new boolean[len][len] ;
+
+        for(int i = 0 ; i < len ; i++){
+            flag[i][i] = true ;
+        }
+        for(int i = 0 , j = 1 ; j < len ; j++ , i++){
+            if(arrS[i] == arrS[j]){
+                flag[i][j] = true ;
+            }
+            else{
+                flag[i][j] = false ;
+            }
+        }
+        for(int k = 2 ; k < len ; k++){
+            for(int i = 0 , j = k ; j < len ; i++ , j++){
+                if(arrS[i] == arrS[j] && flag[i+1][j-1] == true){
+                    flag[i][j] = true ;
+                }
+                else{
+                    flag[i][j] = false ;
+                }
+            }
+        }
+
+        int[] dp = new int[len] ;
+        dp[0] = 0 ; 
+        for(int i = 1 ; i < len ; i++){
+            if(flag[0][i] == true){
+                dp[i] = 0 ;
+            }
+            else{
+                dp[i] = Integer.MAX_VALUE ;
+                for(int j = 1 ; j <= i ; j++){
+                    if(flag[j][i] == true){
+                        dp[i] = Math.min(dp[i] , dp[j-1] + 1) ;
+                    }
+                }
+                dp[i] = (dp[i] == Integer.MAX_VALUE) ? dp[i-1] + 1 : dp[i] ;
+            }
+        }
+        
+        return dp[len-1] ;
+    }
+}
