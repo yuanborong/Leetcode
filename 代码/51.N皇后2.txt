@@ -1,0 +1,62 @@
+class Solution {
+
+    public int[] situation ;
+    public boolean[] col ;
+    public boolean[] right ;
+    public boolean[] left ;
+
+    public List<List<String>> res ;
+
+    public void createMatix(int n){
+        List<String> temp = new ArrayList<>() ;
+        for(int i = 0 ; i < n ; i++){
+            StringBuilder sb = new StringBuilder() ;
+            for(int j = 0 ; j < n ; j++){
+                if(situation[i] == j){
+                    sb.append("Q") ;
+                }
+                else{
+                    sb.append(".") ;
+                }
+            }
+            temp.add(sb.toString()) ;
+        }
+        res.add(temp) ;
+        return ;
+    }
+
+    public void dfs(int n , int rowId){
+        if(rowId == n){
+            createMatix(n) ;
+            return ;
+        }
+        for(int j = 0 ; j < n ; j++){
+            if(col[j] == true) continue ;
+            if(right[(n-1)+(j-rowId)] == true) continue ;
+            if(left[(2*(n-1))-(rowId+j)]) continue ;
+            col[j] = true ;
+            right[(n-1)+(j-rowId)] = true ;
+            left[(2*(n-1))-(rowId+j)] = true ;
+            situation[rowId] = j ;
+            dfs(n , rowId + 1) ;
+            situation[rowId] = -1 ;
+            col[j] = false ;
+            right[(n-1)+(j-rowId)] = false ;
+            left[(2*(n-1))-(rowId+j)] = false ;
+        }
+        return ; 
+    }
+
+    public List<List<String>> solveNQueens(int n) {
+
+        res = new ArrayList<>() ;
+        if(n <= 0) return res ;
+        situation = new int[n] ;
+        right = new boolean[2*n-1] ;
+        left = new boolean[2*n-1] ;
+        col = new boolean[n] ;
+        for(int i = 0 ; i < n ; i++) situation[i] = -1 ;
+        dfs(n , 0) ;
+        return res ;
+    }
+}
